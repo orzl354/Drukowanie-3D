@@ -1,0 +1,19 @@
+# --- Wyniki slicingu (duże, generowane, nie źródłowe) ---
+*.gcode
+*.bgcode
+# Bambu Studio zapisuje sliced output jako *.gcode.3mf
+*.gcode.3mf
+
+# --- Kopie zapasowe i pliki tymczasowe CAD ---
+*.f3d.bak
+*.FCStd1
+*.FCBak
+*~
+
+# --- Systemowe ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# UWAGA: projekty .3mf z Bambu Studio (te BEZ ".gcode" w nazwie) są
+# wersjonowane celowo - to pliki źródłowe z ustawieniami procesu.
