@@ -1,0 +1,40 @@
+WERYFIKACJA MODELU  -  uchwyt-telefon-biurko
+openscad 2021.01,  data: 2026-08-29
+======================================================================
+
+1. SZCZELNOSC BRYL  ('Simple: yes' + 'Volumes: 2' = jedna zamknieta bryla)
+   kolyska     Simple: yes Volumes: 2
+   widelec     Simple: yes Volumes: 2
+   zacisk      Simple: yes Volumes: 2
+   stopka      Simple: yes Volumes: 2
+   pokretlo    Simple: yes Volumes: 2
+
+2. CZY KAZDA CZESC LEZY NA STOLE (min Z = 0, bez wystajacych detali pod spodem)
+   kolyska    min Z =  0.00   OK
+   widelec    min Z =  0.00   OK
+   zacisk     min Z =  0.00   OK
+   stopka     min Z =  0.00   OK
+   pokretlo   min Z =  0.00   OK
+
+3. SKOK OSI PIONOWEJ  (kolek na zacisku w rowku w spodzie tarczy widelca)
+   pan    0 st.: wolne (sam styk plaszczyzn)
+   pan   45 st.: wolne (sam styk plaszczyzn)
+   pan   89 st.: wolne (sam styk plaszczyzn)
+   pan   90 st.: wolne (sam styk plaszczyzn)
+   pan   91 st.: BLOKADA (przenikanie 3.00 mm)
+   pan   95 st.: BLOKADA (przenikanie 3.00 mm)
+   pan  120 st.: BLOKADA (przenikanie 3.00 mm)
+   => skok dokladnie 180 st. (blokada tuz za +/-90)
+
+4. ZAKRES OSI POCHYLENIA  (przenikanie kolyski z widelcem, zaciskiem i blatem 25 mm)
+   tilt    10 st.: KOLIZJA
+   tilt     5 st.: KOLIZJA
+   tilt     4 st.: wolne
+   tilt     0 st.: wolne
+   tilt   -20 st.: wolne
+   tilt   -90 st.: wolne
+   tilt  -180 st.: wolne
+   tilt  -185 st.: wolne
+   tilt  -190 st.: KOLIZJA
+   => zakres od +4 do -185 st. = 189 st. skoku
+      (ujemne = ekran odchylany do uzytkownika, czyli kierunek uzyteczny)
