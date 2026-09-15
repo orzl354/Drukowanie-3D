@@ -33,10 +33,10 @@ FreeCAD jest tylko klikaniem.
 
 | Lekcja | Temat | Nowe umiejętności | Status |
 |---|---|---|---|
-| **1** | [Keycap 1u, płaski wierzch](cwiczenia/01-keycap-mx/) | arkusz parametrów, szkic w pełni związany, Pad, Loft, Thickness, gniazdo MX | **do zrobienia** |
-| 2 | Keycap v2: wgłębienie (dish), pochylenie rzędu, fazy i zaokrąglenia | Pocket przez bryłę obrotową, Chamfer/Fillet, płaszczyzny odniesienia | — |
+| **1** | [Keycap 1u na Esc, płaski wierzch](cwiczenia/01-keycap-mx/) | arkusz parametrów, szkic w pełni związany, Pad, Loft, Thickness, gniazdo MX | **do zrobienia** |
+| 2 | Keycap v2: wgłębienie (dish), **pochylenie górnego rzędu** (Esc go potrzebuje), fazy i zaokrąglenia | Pocket przez bryłę obrotową, Chamfer/Fillet, płaszczyzny odniesienia | — |
 | 3 | Rodzina keycapów z jednego modelu (R1–R4, 1u / 1.25u / 2u) | jeden arkusz → wiele konfiguracji, eksport wsadowy | — |
-| 4 | Keycap z legendą w drugim kolorze (AMS Lite) | modelowanie pod multicolor, podział na obiekty, 3MF wielobryłowy | — |
+| 4 | Keycap z legendą „ESC” w drugim kolorze (AMS Lite) | modelowanie pod multicolor, podział na obiekty, 3MF wielobryłowy | — |
 
 ## Moduł 2 — dalej (szkic, do doprecyzowania po module 1)
 

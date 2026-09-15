@@ -38,8 +38,11 @@ Do rozstrzygnięcia przy modelowaniu:
   `krzyz_luz = 0.1` (ma pochodzić z drabinki kalibracyjnej).
   Wydruk przed ich podmianą nie ma sensu.
 - `gniazdo-mx.scad` nie był renderowany — sprawdzić `Volumes: 1` po `F6` przed eksportem.
-- Nie potwierdziłem jeszcze, że przełączniki w GK630K mają trzpień krzyżowy MX
-  (a nie np. Choc) — do sprawdzenia gołym okiem po zdjęciu pierwszego klawisza.
+- ~~Nie potwierdziłem, czy przełączniki mają trzpień krzyżowy MX~~ — **sprawdzone: krzyż MX**.
+  Geometria gniazda 4,10 × 1,17 mm zostaje. Klawisz docelowy: **Esc**.
+  Wybrany świadomie: narożnik, jeden sąsiad, klawisz akcentowy. Kosztem jest to, że górny
+  rząd ma największe pochylenie wierzchu, a v1 jest płaska — z tyłu wyjdzie niżej niż sąsiad
+  o różnicę A5 − A4 z pomiarów.
 - Nadal brak jakichkolwiek własnych pomiarów kalibracyjnych z A1. Drabinka gniazda MX
   będzie pierwszym — i przy okazji da mi liczbę skurczu otworów pionowych,
   przydatną we wszystkich kolejnych projektach.

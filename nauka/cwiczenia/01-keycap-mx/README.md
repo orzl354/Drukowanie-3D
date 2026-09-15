@@ -33,16 +33,31 @@ które go opisują, **tylko trzy decydują o tym, czy w ogóle zadziała**:
 Cała reszta (wysokość, szerokość wierzchu, kąt ścianek) to **estetyka i ergonomia** —
 tu masz wolną rękę, byle profil pasował do sąsiadów w rzędzie.
 
+### Cel: klawisz Esc
+
+Robimy zamiennik **Escape**. To dobry pierwszy cel, bo Esc leży w narożniku — ma tylko
+jednego sąsiada z prawej (`1`), więc ewentualna różnica profilu rzuca się w oczy najmniej
+w całej klawiaturze. Do tego jest naturalnym klawiszem akcentowym: wydruk w innym kolorze
+czyta się jako zamysł, a nie jako proteza.
+
+**Haczyk:** Esc siedzi w **górnym rzędzie**, a ten ma w profilu OEM największe pochylenie
+wierzchu — przód jest wyraźnie niższy od tyłu. Nasza v1 ma wierzch płaski, więc wyjdzie
+mniej więcej na wysokości **przedniej** krawędzi oryginału, czyli z tyłu będzie niższa
+o tyle, ile wyniesie różnica `A5 − A4` z pomiarów. Nie ukrywam tego — to jest dokładnie ta
+rzecz, którą naprawia lekcja 2. Na Esc, w narożniku, da się z tym wytrzymać przez jeden wydruk.
+
+Zmierz **ten konkretny keycap, który zastępujesz** — nie klawisz z innego rzędu.
+
+> Kontrola rzędu: postaw zdjęty Esc obok zdjętej jedynki. Jeśli mają tę samą wysokość
+> i to samo pochylenie — są z jednego rzędu i wszystko się zgadza.
+
 ### Zanim usiądziesz do FreeCAD
 
-Wypełnij [`pomiary.md`](pomiary.md). Potrzebujesz suwmiarki i **jednego zdjętego keycapa**
-(najlepiej z rzędu, w którym chcesz mieć zamiennik — np. `F` albo `J`).
+Wypełnij [`pomiary.md`](pomiary.md). Potrzebujesz suwmiarki i zdjętego keycapa Esc.
 Bez tych liczb będziesz modelował cudzy klawisz, nie swój.
 
-> **Sprawdź od razu jedną rzecz:** po zdjęciu keycapa zobacz, czy trzpień przełącznika to
-> **krzyż** (MX: Gateron / Outemu / Cherry). Jeśli to co innego (np. Kailh Choc — dwa prostokątne
-> kołki), cała geometria gniazda z tej lekcji jest nieaktualna i musimy ją przeliczyć.
-> Napisz mi, co zobaczyłeś.
+> ✅ **Sprawdzone:** trzpień przełącznika to **krzyż MX**. Geometria gniazda z tej lekcji
+> (4,10 × 1,17 mm) jest właściwa.
 
 ---
 
@@ -228,3 +243,9 @@ Zaliczone, gdy **wszystkie** są spełnione:
 2. Wydrukuj keycapa i wpisz wnioski do [`projekty/keycap-mx-1u/README.md`](../../../projekty/keycap-mx-1u/README.md).
 3. Wpis do [`nauka/dziennik.md`](../../dziennik.md).
 4. Lekcja 2: dish, pochylenie rzędu, fazy — i decyzja, jak to wydrukować bez podpór.
+
+> **Napis „ESC” w v1 nie powstanie.** Wytłoczenie liter przy tej wysokości warstwy wyjdzie
+> nieczytelne i chropowate pod palcem, a wygrawerowanie ich zostawi rowki, w których zbiera się
+> brud. Legendę robimy dopiero w v4, drukiem dwukolorowym z AMS Lite — wtedy jest płaska,
+> ostra i nie ściera się, bo to osobny materiał na całej głębokości. Do tego czasu Esc będzie
+> gładki: na klawiszu, którego i tak szuka się palcem w narożniku, to żadna strata.

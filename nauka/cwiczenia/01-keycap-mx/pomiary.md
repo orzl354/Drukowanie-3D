@@ -5,8 +5,15 @@
 > a my robimy zamiennik do **tej** klawiatury.
 
 **Data pomiaru:** ____________
-**Mierzony klawisz:** ____________ (np. `F`, rząd 3)
-**Suwamiarka:** ____________ (elektroniczna / zegarowa, rozdzielczość)
+**Mierzony klawisz:** **Esc** (górny rząd) — ten sam, który zastępujemy
+**Suwmiarka:** ____________ (elektroniczna / zegarowa, rozdzielczość)
+
+> Jeśli nie masz suwmiarki: zmierz przynajmniej **B1** (głębokość wewnętrzna) —
+> da się to zrobić wykałaczką i linijką z dokładnością ~0,5 mm, wkładając ją do środka
+> keycapa aż do oporu i zaznaczając paznokciem poziom krawędzi. To gorsze niż suwmiarka,
+> ale nadal lepsze niż liczba wzięta z internetu. Resztę wymiarów zewnętrznych da się
+> odrysować ołówkiem na kartce w kratkę. Powiedz mi, jeśli tak wychodzi — przestawię
+> kolejność tak, żeby drabinka kalibracyjna poszła pierwsza.
 
 ---
 
@@ -18,8 +25,15 @@
 | A2 | głębokość podstawy (przód–tył) | j.w., w drugiej osi | ______ mm | — (jeśli ≠ A1, powiedz mi) |
 | A3 | szerokość wierzchu | górna płaszczyzna, lewo–prawo | ______ mm | `szer_gory` |
 | A4 | wysokość całkowita z przodu | od dolnej krawędzi do najniższego punktu wierzchu | ______ mm | kontrola `wys_calk` |
-| A5 | wysokość całkowita z tyłu | j.w., z tyłu | ______ mm | → różnica A5−A4 = **pochylenie rzędu**, lekcja 2 |
+| A5 | wysokość całkowita z tyłu | j.w., z tyłu | ______ mm | → różnica A5−A4 = **pochylenie rzędu**; w górnym rzędzie jest największa, patrz niżej |
 | A6 | głębokość wgłębienia (dish) | linijka w poprzek wierzchu, szczelina w środku | ______ mm | lekcja 2 |
+
+> **A4 i A5 na klawiszu Esc.** Esc jest w górnym rzędzie, więc spodziewaj się największej
+> różnicy A5 − A4 z całej klawiatury. Zanotuj ją — to jest dokładnie ta wartość, o którą
+> płaska v1 będzie z tyłu niższa od sąsiadów, i to jest pierwszy parametr lekcji 2.
+> Jeśli A5 − A4 wyjdzie poniżej ~0,5 mm, to znaczy, że Twoje keycapy mają rzędy o płaskim
+> wierzchu (profil w typie DSA/XDA) — wtedy v1 będzie **od razu** pasowała do reszty
+> i lekcja 2 zmienia zakres. Napisz mi, ile wyszło.
 
 ## B. Wymiary wewnętrzne — te decydują, czy klawisz zadziała
 

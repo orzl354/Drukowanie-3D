@@ -3,6 +3,9 @@
 Zamiennik keycapa 1u na przełącznik MX do klawiatury **Skyloong GK630K Onyx White**
 (oryginalne klawisze: pudding). Pierwszy projekt robiony we **FreeCAD**, nie w OpenSCAD.
 
+**Klawisz docelowy: Escape.** Przełączniki potwierdzone — trzpień **krzyżowy MX**
+(sprawdzone po zdjęciu klawisza, 2026-09-15).
+
 Prowadzenie krok po kroku: [`nauka/cwiczenia/01-keycap-mx/`](../../nauka/cwiczenia/01-keycap-mx/)
 
 ## Cel
@@ -11,20 +14,30 @@ Nauczyć się Part Design na przedmiocie, który ma twarde, weryfikowalne kryter
 albo klawisz wchodzi na przełącznik i ma pełny skok, albo nie. Docelowo — własny zestaw
 klawiszy akcentowych (Esc, strzałki) w innym kolorze niż reszta.
 
+**Dlaczego akurat Esc:** leży w narożniku, ma jednego sąsiada, jest naturalnym klawiszem
+akcentowym (wydruk w innym kolorze wygląda na zamysł, nie na protezę) i nie bierze udziału
+w pisaniu na ślepo — różnica w profilu nie przeszkadza w pracy.
+
+**Czym za to płacimy:** Esc siedzi w górnym rzędzie, a ten ma największe pochylenie wierzchu.
+Płaska v1 wyjdzie mniej więcej na wysokości przedniej krawędzi oryginału, czyli z tyłu będzie
+niższa od sąsiadów o różnicę `A5 − A4` z pomiarów. Świadomy kompromis na jeden wydruk —
+lekcja 2 to naprawia.
+
 Wersjonowanie:
 
 | Wersja | Zakres | Status |
 |---|---|---|
-| **v1** | 1u, **płaski wierzch**, bez pochylenia rzędu, bez zaokrągleń | modelowanie |
-| v2 | wgłębienie pod palec (dish), pochylenie rzędu, fazy | — |
+| **v1** | 1u, **płaski wierzch**, bez pochylenia rzędu, bez zaokrągleń, **bez legendy** | modelowanie |
+| v2 | wgłębienie pod palec (dish), **pochylenie górnego rzędu**, fazy | — |
 | v3 | rodzina: rzędy R1–R4, rozmiary 1.25u / 2u | — |
-| v4 | legenda w drugim kolorze (AMS Lite) | — |
+| v4 | legenda „ESC” w drugim kolorze (AMS Lite) | — |
 
 ## Materiał
 
 | Zastosowanie | Filament | Dlaczego |
 |---|---|---|
 | Egzemplarze testowe (pasowanie) | **PLA Matte** | tani, stabilny wymiarowo, matowa faktura dobrze udaje keycapa; do sprawdzenia pasowania w zupełności wystarczy |
+| Wersja akcentowa | **PLA Matte, kolor kontrastowy** | Esc to klawisz akcentowy — na białej klawiaturze wydruk w wyraźnym kolorze czyta się jako zamysł, a nie jako niedoróbka profilu |
 | Wersja „na klawiaturę" | **PETG (czarny)** | lepsza odporność na ścieranie i na tłuszcz z palców niż PLA — **do zweryfikowania w praktyce, nie mam jeszcze przebiegu** |
 
 **ASA nie ma tu sensu** — klawiatura stoi na biurku, nie w aucie. Odporność na 60 °C
@@ -63,6 +76,10 @@ Dlaczego taka orientacja i dlaczego v1 ma płaski wierzch — uzasadnienie w sek
 
 `szkic` — model jeszcze nie zbudowany, kalibracja niewykonana, nic nie wydrukowane.
 Wartości w arkuszu to placeholdery z lekcji.
+
+Ustalone: klawisz docelowy **Esc**, przełącznik **MX (krzyż)**, orientacja druku
+**wierzchem do stołu**, v1 **bez legendy** — napis dopiero w v4, drukiem dwukolorowym.
+Tłoczenie albo grawer przy tej wysokości warstwy wyjdzie chropowate i będzie zbierać brud.
 
 ## Wnioski
 
