@@ -257,6 +257,7 @@ Zaliczone, gdy **wszystkie** są spełnione:
 | Objaw | Przyczyna |
 |---|---|
 | Loft wychodzi skręcony | prostokąty nie są tak samo zorientowane — brakuje symetrii w jednym ze szkiców |
+| Szkic zielony, ale kształt niesymetryczny | jeden wymiar za dużo — patrz [„Ile wymiarów potrzebuje kształt"](../../notatki/freecad-03-part-design.md#ile-wymiarów-potrzebuje-kształt--i-co-się-dzieje-gdy-dasz-o-jeden-za-dużo). Zielony znaczy „bez stopni swobody", nie „poprawny" |
 | Thickness zgłasza błąd | zaznaczona krawędź zamiast ścianki, albo grubość > połowa najmniejszego wymiaru |
 | „Invalid sketch" przy Pocket | dwa nachodzące zarysy w jednym szkicu |
 | Pole wymiaru nie przyjmuje `Arkusz.x` | arkusz nazywa się inaczej (sprawdź **Name** w drzewie, nie Label), albo alias ma polski znak |

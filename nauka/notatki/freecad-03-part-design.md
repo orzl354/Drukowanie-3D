@@ -37,6 +37,68 @@ sam wybierze, co przesunąć. Licznik stopni swobody jest na dole okna Sketchera
 
 ---
 
+## Ile wymiarów potrzebuje kształt — i co się dzieje, gdy dasz o jeden za dużo
+
+To jest najczęstsza pułapka Sketchera i **zielony szkic wcale przed nią nie chroni**.
+Zielony znaczy tylko „nie ma stopni swobody", a nie „kształt jest taki, jak chciałeś".
+
+### Jak to policzyć
+
+Zamknięty czworokąt (4 linie) ma na starcie **8 stopni swobody**. Każdy więz je odbiera:
+
+| Więz | Ile odbiera |
+|---|---|
+| punkt na osi | 1 |
+| symetria dwóch punktów względem osi | 2 |
+| poziomo / pionowo | 1 |
+| każdy wymiar (długość, kąt) | 1 |
+
+### Trapez keycapa — komplet więzów
+
+Profil boku keycapa: podstawa na osi poziomej, symetryczny względem osi pionowej.
+
+```
+punkt lewy dolny na osi X                 -1   ->  7
+symetria dolnych punktów wzgl. osi Y      -2   ->  5
+symetria górnych punktów wzgl. osi Y      -2   ->  3
+```
+
+Zostają **dokładnie 3 stopnie swobody = dokładnie 3 wymiary**: szerokość podstawy,
+szerokość góry, wysokość.
+
+Uwaga na dwie pokusy, które po symetrii są już **nadmiarowe**:
+- „poziomo" na górnej krawędzi — symetria górnych punktów już ją wymusza,
+- drugi punkt dolny na osi X — symetria dolnych punktów już go tam trzyma.
+
+FreeCAD zgłosi je jako *redundant constraints*.
+
+### Dlaczego kąt boku to ten jeden za dużo
+
+Podstawa, góra i wysokość **wyznaczają kąt boku**. Nie da się go dołożyć jako czwartej
+niezależnej liczby, bo on już wynika z tamtych trzech:
+
+| Podstawa | Góra | Wysokość | Kąt boku do poziomu |
+|---|---|---|---|
+| 18 | 13 | 11 | **77,2°** |
+| 18 | 15,3 | 11 | 83° |
+
+Jeśli mimo to wymusisz 83° **po jednej stronie**, a szerokość góry po drugiej, szkic da się
+w pełni związać — tylko wyjdzie **niesymetryczny**: górna krawędź ucieknie w bok, bo nic
+nie każe jej stać na środku. Będzie zielony i będzie zły.
+
+Sygnał ostrzegawczy: figura, która miała być symetryczna, nie jest.
+Nie przyglądaj się liczbom — przyglądaj się kształtowi.
+
+### Reguła na przyszłość
+
+> Najpierw **symetrie i więzy geometryczne**, dopiero potem wymiary.
+> Wymiarów dokładaj tyle, ile zostało stopni swobody — licznik na dole okna Sketchera
+> odlicza Ci to na bieżąco. Kiedy dojdzie do zera, **przestań**.
+
+Wymiary wybieraj takie, które umiesz porównać z rzeczywistością. Szerokość podstawy
+i wysokość przyłożysz do prawdziwego keycapa. Kąta boku nie przyłożysz do niczego —
+niech będzie wynikiem, nie założeniem.
+
 ## Płaszczyzny i po czym szkicować
 
 Nowe Body ma trzy płaszczyzny bazowe: **XY**, **XZ**, **YZ**. Szkicuj po nich zawsze, gdy się da.
