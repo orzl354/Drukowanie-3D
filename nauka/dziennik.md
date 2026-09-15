@@ -15,6 +15,41 @@ Format wpisu:
 
 ---
 
+## 2026-09-15 — start kursu FreeCAD, projekt: keycap MX
+
+**Co robiłem:** ustawiliśmy kurs FreeCAD (plan w `nauka/kurs-freecad.md`, wzorzec: kanał
+CAD CAM Lessons), notatki modułu 0 i lekcję 1 — keycap 1u na przełącznik MX do GK630K.
+Doszedł projekt `projekty/keycap-mx-1u/` i drabinka tolerancji `kalibracja/01-gniazdo-mx/`.
+Samego modelu jeszcze nie zbudowałem — to jest zadanie na następną sesję.
+
+**Czego się nauczyłem:** _(uzupełnić po zrobieniu lekcji 1)_
+
+Do rozstrzygnięcia przy modelowaniu:
+
+1. Czy arkusz (Spreadsheet) faktycznie daje mi to samo, co zmienne na górze pliku `.scad` —
+   szczególnie: czy zmiana jednej wartości przelicza model bez błędów w drzewie.
+2. Czy `Thickness` jest wygodniejszy od ręcznego liczenia wewnętrznego Loftu.
+3. Ile realnie kosztuje pilnowanie, żeby każdy szkic był zielony.
+
+**Co nie wyszło / do sprawdzenia:**
+
+- Dwie liczby w arkuszu to na razie **placeholdery**, nie pomiary:
+  `gleb_wew = 7.8` (ma pochodzić z pomiaru B1 oryginalnego keycapa) i
+  `krzyz_luz = 0.1` (ma pochodzić z drabinki kalibracyjnej).
+  Wydruk przed ich podmianą nie ma sensu.
+- `gniazdo-mx.scad` nie był renderowany — sprawdzić `Volumes: 1` po `F6` przed eksportem.
+- Nie potwierdziłem jeszcze, że przełączniki w GK630K mają trzpień krzyżowy MX
+  (a nie np. Choc) — do sprawdzenia gołym okiem po zdjęciu pierwszego klawisza.
+- Nadal brak jakichkolwiek własnych pomiarów kalibracyjnych z A1. Drabinka gniazda MX
+  będzie pierwszym — i przy okazji da mi liczbę skurczu otworów pionowych,
+  przydatną we wszystkich kolejnych projektach.
+
+**Następny krok:** pomiary suwmiarką (`nauka/cwiczenia/01-keycap-mx/pomiary.md`),
+druk drabinki `kalibracja/01-gniazdo-mx/`, dopiero potem FreeCAD.
+W tej kolejności, bo cała lekcja 1 stoi na tych dwóch liczbach.
+
+---
+
 ## 2026-08-29 — uchwyt na telefon: pierwszy projekt parametryczny
 
 **Co robiłem:** zaprojektowałem uchwyt na telefon na biurko (zacisk na krawędź

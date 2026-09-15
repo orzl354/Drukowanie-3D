@@ -1,0 +1,20 @@
+# Normalizacja koncow linii - pracuje na Linuksie i na macOS
+* text=auto
+
+# Pliki binarne: bez konwersji koncow linii i bez prob diffowania.
+# .FCStd to zzipowany XML - git nie ma jak go scalic, patrz
+# nauka/notatki/freecad-01-instalacja-i-ustawienia.md
+*.FCStd  binary
+*.FCStd1 binary
+*.FCBak  binary
+*.f3d    binary
+*.3mf    binary
+*.stl    binary
+*.png    binary
+*.jpg    binary
+*.jpeg   binary
+
+# Zrodla CAD w formacie tekstowym - chce widziec diffy
+*.scad   text
+*.py     text
+*.md     text
