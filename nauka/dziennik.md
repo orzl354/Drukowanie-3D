@@ -33,11 +33,14 @@ Do rozstrzygnięcia przy modelowaniu:
 
 **Co nie wyszło / do sprawdzenia:**
 
-- Dwie liczby w arkuszu to na razie **placeholdery**, nie pomiary:
-  `gleb_wew = 7.8` (ma pochodzić z pomiaru B1 oryginalnego keycapa) i
-  `krzyz_luz = 0.1` (ma pochodzić z drabinki kalibracyjnej).
-  Wydruk przed ich podmianą nie ma sensu.
-- `gniazdo-mx.scad` nie był renderowany — sprawdzić `Volumes: 1` po `F6` przed eksportem.
+- **Nie mam suwmiarki.** Zmieniło to sposób pracy: zamiast mierzyć oryginał, dobieram
+  dwa parametry porównując wydruk z sąsiednim klawiszem. Model dostał w związku z tym inną
+  parametryzację — `wys_calk` i `gniazdo_od_dolu` zamiast głębokości wewnętrznej, bo każdy
+  z nich ma własny, niezależny objaw przy oględzinach. Metoda: `pomiary.md`.
+- Wartości startowe `wys_calk = 9.5` i `gniazdo_od_dolu = 7.0` to świadome zgadywanie
+  w bezpieczną stronę (za nisko osadzony keycap jest brzydki, za głęboko osadzony ma
+  skrócony skok). Poprawka po pierwszym wydruku.
+- `krzyz_luz = 0.1` to placeholder do czasu odczytania drabinki.
 - ~~Nie potwierdziłem, czy przełączniki mają trzpień krzyżowy MX~~ — **sprawdzone: krzyż MX**.
   Geometria gniazda 4,10 × 1,17 mm zostaje. Klawisz docelowy: **Esc**.
   Wybrany świadomie: narożnik, jeden sąsiad, klawisz akcentowy. Kosztem jest to, że górny

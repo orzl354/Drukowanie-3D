@@ -7,6 +7,7 @@ Zamiennik keycapa 1u na przełącznik MX do klawiatury **Skyloong GK630K Onyx Wh
 (sprawdzone po zdjęciu klawisza, 2026-09-15).
 
 Prowadzenie krok po kroku: [`nauka/cwiczenia/01-keycap-mx/`](../../nauka/cwiczenia/01-keycap-mx/)
+Lista kroków na teraz: [`START.md`](../../nauka/cwiczenia/01-keycap-mx/START.md)
 
 ## Cel
 
@@ -69,8 +70,13 @@ Dlaczego taka orientacja i dlaczego v1 ma płaski wierzch — uzasadnienie w sek
 
 | Co | Skąd | Bez tego |
 |---|---|---|
-| `krzyz_luz` | [`kalibracja/01-gniazdo-mx/`](../../kalibracja/01-gniazdo-mx/) | keycap nie wejdzie albo pęknie |
-| `gleb_wew` | pomiar B1 w [`pomiary.md`](../../nauka/cwiczenia/01-keycap-mx/pomiary.md) | klawisz będzie miał skrócony skok |
+| `krzyz_luz` | [`kalibracja/01-gniazdo-mx/`](../../kalibracja/01-gniazdo-mx/) — pasowanie, bez pomiaru | keycap nie wejdzie albo pęknie |
+| `wys_calk` | porównanie z oryginałem na stole — [`pomiary.md`](../../nauka/cwiczenia/01-keycap-mx/pomiary.md) | keycap wyższy/niższy od sąsiadów |
+| `gniazdo_od_dolu` | porównanie na klawiaturze — [`pomiary.md`](../../nauka/cwiczenia/01-keycap-mx/pomiary.md) | klawisz siedzi za wysoko albo ma skrócony skok |
+
+Brak suwmiarki nie blokuje projektu: `krzyz_luz` wynika z pasowania drabinki,
+a pozostałe dwa parametry z porównania wydruku z oryginałem. Iterujemy wydrukami —
+jeden keycap to ok. 10 minut i grama filamentu.
 
 ## Status
 

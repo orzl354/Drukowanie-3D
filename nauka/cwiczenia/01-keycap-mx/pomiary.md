@@ -1,81 +1,115 @@
-# Pomiary oryginalnego keycapa — GK630K Onyx White (pudding)
+# Dopasowanie keycapa — metoda bez suwmiarki
 
-> Wypełnij suwmiarką **przed** modelowaniem. Liczby stąd wpisujesz do arkusza we FreeCAD.
-> Nie kopiuj wartości „typowych z internetu" — profile keycapów różnią się między producentami,
-> a my robimy zamiennik do **tej** klawiatury.
+Nie mam suwmiarki, więc **przyrządami pomiarowymi są: oryginalny keycap, klawiatura
+i sama drukarka.** To nie jest gorszy zastępnik — dla tej części jest wręcz trafniejszy,
+bo interesuje nas nie „ile ma milimetrów", tylko „czy pasuje do sąsiadów".
 
-**Data pomiaru:** ____________
-**Mierzony klawisz:** **Esc** (górny rząd) — ten sam, który zastępujemy
-**Suwmiarka:** ____________ (elektroniczna / zegarowa, rozdzielczość)
-
-> Jeśli nie masz suwmiarki: zmierz przynajmniej **B1** (głębokość wewnętrzna) —
-> da się to zrobić wykałaczką i linijką z dokładnością ~0,5 mm, wkładając ją do środka
-> keycapa aż do oporu i zaznaczając paznokciem poziom krawędzi. To gorsze niż suwmiarka,
-> ale nadal lepsze niż liczba wzięta z internetu. Resztę wymiarów zewnętrznych da się
-> odrysować ołówkiem na kartce w kratkę. Powiedz mi, jeśli tak wychodzi — przestawię
-> kolejność tak, żeby drabinka kalibracyjna poszła pierwsza.
+> Suwmiarkę i tak warto kupić — elektroniczna 150 mm to wydatek rzędu 40–70 zł
+> i najbardziej przydatne narzędzie w druku 3D po samej drukarce. Ale nie czekamy na nią.
 
 ---
 
-## A. Wymiary zewnętrzne
+## Skąd bierzemy trzy potrzebne liczby
 
-| # | Co mierzysz | Jak | Wartość | Trafia do aliasu |
-|---|---|---|---|---|
-| A1 | szerokość podstawy (lewo–prawo) | najszersze miejsce dolnej krawędzi | ______ mm | `szer_podstawy` |
-| A2 | głębokość podstawy (przód–tył) | j.w., w drugiej osi | ______ mm | — (jeśli ≠ A1, powiedz mi) |
-| A3 | szerokość wierzchu | górna płaszczyzna, lewo–prawo | ______ mm | `szer_gory` |
-| A4 | wysokość całkowita z przodu | od dolnej krawędzi do najniższego punktu wierzchu | ______ mm | kontrola `wys_calk` |
-| A5 | wysokość całkowita z tyłu | j.w., z tyłu | ______ mm | → różnica A5−A4 = **pochylenie rzędu**; w górnym rzędzie jest największa, patrz niżej |
-| A6 | głębokość wgłębienia (dish) | linijka w poprzek wierzchu, szczelina w środku | ______ mm | lekcja 2 |
-
-> **A4 i A5 na klawiszu Esc.** Esc jest w górnym rzędzie, więc spodziewaj się największej
-> różnicy A5 − A4 z całej klawiatury. Zanotuj ją — to jest dokładnie ta wartość, o którą
-> płaska v1 będzie z tyłu niższa od sąsiadów, i to jest pierwszy parametr lekcji 2.
-> Jeśli A5 − A4 wyjdzie poniżej ~0,5 mm, to znaczy, że Twoje keycapy mają rzędy o płaskim
-> wierzchu (profil w typie DSA/XDA) — wtedy v1 będzie **od razu** pasowała do reszty
-> i lekcja 2 zmienia zakres. Napisz mi, ile wyszło.
-
-## B. Wymiary wewnętrzne — te decydują, czy klawisz zadziała
-
-| # | Co mierzysz | Jak | Wartość | Trafia do aliasu |
-|---|---|---|---|---|
-| B1 | **głębokość wewnętrzna** | głębokościomierz suwmiarki: od dolnej krawędzi do wewnętrznego sufitu | ______ mm | **`gleb_wew`** |
-| B2 | grubość ścianki bocznej | szczęki suwmiarki na krawędzi spódnicy | ______ mm | porównaj z `gr_scianki` = 1.2 |
-| B3 | wysokość bossa (słupka z krzyżem) | od sufitu w dół do dolnej krawędzi bossa | ______ mm | kontrola `boss_wys` |
-| B4 | średnica / szerokość bossa | ______ mm | kontrola `boss_srednica` |
-
-> **B1 jest najważniejszą liczbą w całej tabeli.** Jeśli ją zaniżysz, klawisz będzie miał
-> skrócony skok — spódnica usiądzie na obudowie przełącznika przed końcem ruchu.
-> Jeśli zawyżysz, keycap będzie „pływał" wyżej niż sąsiedzi.
-> Zmierz dwa razy, w dwóch miejscach.
-
-## C. Przełącznik (keycap zdjęty)
-
-| # | Co sprawdzasz | Wartość / odpowiedź |
+| Parametr | Skąd | Kiedy |
 |---|---|---|
-| C1 | Kształt trzpienia | krzyż (MX) / dwa kołki (Choc) / inny: ______ |
-| C2 | Marka na obudowie przełącznika | ______ |
-| C3 | Wysokość trzpienia nad obudową (stan spoczynku) | ______ mm |
-| C4 | Ramię krzyża — długość | ______ mm (nominał 4,10) |
-| C5 | Ramię krzyża — grubość | ______ mm (nominał 1,17) |
-| C6 | Prześwit pod krawędzią keycapa do płytki (stan spoczynku) | ______ mm — musi być **> 4 mm** (skok) |
+| `krzyz_luz` | drabinka [`kalibracja/01-gniazdo-mx`](../../../kalibracja/01-gniazdo-mx/) — pasowanie, nie pomiar | **przed** modelowaniem |
+| `wys_calk` | porównanie 1: keycap obok keycapa na stole | po pierwszym wydruku |
+| `gniazdo_od_dolu` | porównanie 2: keycap na klawiaturze obok sąsiada | po pierwszym wydruku |
 
-> C4 i C5 mierzy się trudno, bo szczęki suwmiarki ślizgają się po ukosach trzpienia.
-> Jeśli wyjdzie coś w granicach 4,0–4,2 i 1,1–1,3 — nominał jest w porządku, jedziemy dalej.
-> Liczy się i tak wynik **drabinki kalibracyjnej**, nie ten pomiar.
-
-## D. Kontrola sąsiedztwa
-
-| # | Co | Wartość |
-|---|---|---|
-| D1 | rozstaw środków dwóch sąsiednich klawiszy | ______ mm (spodziewane 19,05) |
-| D2 | szczelina między sąsiednimi keycapami | ______ mm |
+`szer_podstawy` i `szer_gory` zostawiamy bez zmian — 18 mm przy rozstawie 19,05 mm
+daje właściwą szczelinę, a szerokość wierzchu to czysta estetyka. Nie ma tu czego mierzyć.
 
 ---
 
-## Wnioski z pomiarów
+## Jak zobaczyć dziesiąte części milimetra bez narzędzi
 
-Które wartości startowe z lekcji okazały się nietrafione i o ile:
+**Sztuczka z warstwą.** Drukujesz warstwą 0,12 mm. Boczna ścianka wydruku ma widoczne
+prążki co dokładnie tę wartość. Jeśli Twój keycap jest niższy od oryginału o cztery prążki —
+różnica wynosi 0,48 mm. Masz linijkę z podziałką 0,12 mm wbudowaną w każdy wydruk.
 
-```
-```
+**Sztuczka ze światłem.** Połóż obie części na czymś płaskim (szkło, blat, okładka książki)
+i przyłóż w poprzek wierzchów sztywną prostą krawędź — plastikową kartę, grzbiet linijki,
+brzeg pudełka. Szczelina poniżej 0,1 mm jest widoczna pod światło jako jasny pasek.
+Oko wyłapuje tu znacznie mniej, niż zmierzyłoby się linijką.
+
+---
+
+## Porównanie 1 — `wys_calk` (na stole)
+
+Postaw obok siebie **oryginalny Esc** i **wydrukowany keycap**, oba dolną krawędzią do blatu.
+Przyłóż prostą krawędź w poprzek.
+
+Oryginał ma wierzch pochylony, więc porównuj z jego **przednią** krawędzią — to ten punkt,
+któremu odpowiada nasz płaski wierzch.
+
+| Co widzisz | Co zrobić w arkuszu |
+|---|---|
+| wydruk niższy o `x` | `wys_calk` + `x` |
+| wydruk wyższy o `x` | `wys_calk` − `x` |
+| równo | nie ruszaj |
+
+## Porównanie 2 — `gniazdo_od_dolu` (na klawiaturze)
+
+Załóż wydrukowany keycap na przełącznik Esc. Obok, na swoim miejscu, zostaw **oryginalną
+jedynkę** — jest z tego samego rzędu, więc jest uczciwym punktem odniesienia.
+Przyłóż prostą krawędź w poprzek obu.
+
+Robisz to **po** wyrównaniu `wys_calk`, inaczej zmieszasz dwa błędy w jeden.
+
+| Co widzisz | Co to znaczy | Co zrobić w arkuszu |
+|---|---|---|
+| wydruk **sterczy** o `x` | gniazdo za płytkie, keycap nie nasuwa się dość głęboko | `gniazdo_od_dolu` + `x` |
+| wydruk **wsiąka** o `x` | gniazdo za głębokie | `gniazdo_od_dolu` − `x` |
+| równo | gotowe | — |
+
+## Test skoku — ważniejszy niż wygląd
+
+Naciskaj na przemian wydrukowany Esc i sąsiednią jedynkę. Szukasz różnicy w **głębokości
+i charakterze** ruchu.
+
+- Klawisz zatrzymuje się wyżej, kończy „twardo", jakby uderzał w coś sztywnego →
+  **dolna krawędź siada na obudowie przełącznika przed końcem skoku.**
+  Zmniejsz `gniazdo_od_dolu` o 0,5 mm i drukuj ponownie.
+- Skok taki sam jak u sąsiada → w porządku.
+
+Ten objaw ma pierwszeństwo przed wyglądem. Klawisz o skróconym skoku jest wadliwy,
+klawisz stojący 0,3 mm za wysoko jest tylko brzydki.
+
+---
+
+## Dziennik dopasowania
+
+| Wydruk | `wys_calk` | `gniazdo_od_dolu` | `krzyz_luz` | Co zaobserwowałem | Poprawka |
+|---|---|---|---|---|---|
+| v1-a | 9.5 | 7.0 | | | |
+| v1-b | | | | | |
+| v1-c | | | | | |
+
+Gotowe, gdy: keycap trzyma się po odwróceniu klawiatury, ma taki sam skok jak sąsiad,
+a wierzch stoi równo z jedynką.
+
+---
+
+## Gdy kupisz suwmiarkę
+
+Wtedy warto zmierzyć oryginał wprost i wpisać liczby od razu, zamiast iterować.
+Tabela do wypełnienia:
+
+**Data:** ____________ **Mierzony klawisz:** Esc
+
+| # | Co mierzysz | Wartość | Alias |
+|---|---|---|---|
+| A1 | szerokość podstawy | ______ mm | `szer_podstawy` |
+| A3 | szerokość wierzchu | ______ mm | `szer_gory` |
+| A4 | wysokość całkowita **z przodu** | ______ mm | `wys_calk` |
+| A5 | wysokość całkowita **z tyłu** | ______ mm | → A5 − A4 = pochylenie rzędu, lekcja 2 |
+| A6 | głębokość wgłębienia (dish) | ______ mm | lekcja 2 |
+| B1 | głębokość wewnętrzna (do sufitu) | ______ mm | kontrola: ≈ `wys_calk` − `gr_scianki` |
+| B2 | grubość ścianki bocznej | ______ mm | porównanie z `gr_scianki` = 1,2 |
+| B3 | od dolnej krawędzi do dna gniazda | ______ mm | **`gniazdo_od_dolu`** |
+| D1 | rozstaw środków sąsiednich klawiszy | ______ mm | spodziewane 19,05 |
+
+> **A5 − A4** to jest ta wartość, o którą płaska v1 jest z tyłu niższa od sąsiadów,
+> i pierwszy parametr lekcji 2. Jeśli wyjdzie poniżej ~0,5 mm — Twoje keycapy mają rzędy
+> o płaskim wierzchu (profil w typie DSA/XDA), v1 pasuje od razu, a lekcja 2 zmienia zakres.

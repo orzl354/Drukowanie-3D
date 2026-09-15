@@ -31,6 +31,8 @@ FreeCAD jest tylko klikaniem.
 
 ## Moduł 1 — keycap (tu zaczynamy)
 
+➡️ **[Lista kroków na teraz: `cwiczenia/01-keycap-mx/START.md`](cwiczenia/01-keycap-mx/START.md)**
+
 | Lekcja | Temat | Nowe umiejętności | Status |
 |---|---|---|---|
 | **1** | [Keycap 1u na Esc, płaski wierzch](cwiczenia/01-keycap-mx/) | arkusz parametrów, szkic w pełni związany, Pad, Loft, Thickness, gniazdo MX | **do zrobienia** |

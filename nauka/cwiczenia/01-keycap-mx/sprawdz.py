@@ -102,15 +102,31 @@ def sprawdz():
             status = "OK" if abs(delta) < 0.01 else "ROZNICA %+.3f mm  <-- sprawdz" % delta
             print("    %s: model %.3f  vs  %s = %.3f   %s" % (os_, zmierzone, alias, cel, status))
 
-        # 6. Przypomnienie o placeholderach
+        # 6. Kontrola zapasu materialu nad gniazdem
+        zapas = _alias(sheet, "zapas")
+        if zapas is None:
+            wys = _alias(sheet, "wys_calk")
+            gr = _alias(sheet, "gr_scianki")
+            od_dolu = _alias(sheet, "gniazdo_od_dolu")
+            if None not in (wys, gr, od_dolu):
+                zapas = wys - gr - od_dolu
+        if zapas is not None:
+            if zapas < 0.4:
+                print("  BLAD: zapas nad gniazdem = %.3f mm (min. 0.400)." % zapas)
+                print("        Gniazdo przebije sie przez wierzch klawisza.")
+                print("        Zwieksz wys_calk albo zmniejsz gniazdo_od_dolu.")
+            else:
+                print("  Zapas nad gniazdem : %.3f mm  OK" % zapas)
+
+        # 7. Przypomnienie o placeholderach
         luz = _alias(sheet, "krzyz_luz")
-        gleb = _alias(sheet, "gleb_wew")
+        od_dolu = _alias(sheet, "gniazdo_od_dolu")
         if luz is not None and abs(luz - 0.10) < 1e-6:
             print("  UWAGA: krzyz_luz = 0.100 mm to wartosc startowa z lekcji.")
-            print("         Zrob kalibracja/01-gniazdo-mx zanim wydrukujesz keycapa na serio.")
-        if gleb is not None and abs(gleb - 7.80) < 1e-6:
-            print("  UWAGA: gleb_wew = 7.800 mm to wartosc startowa z lekcji.")
-            print("         Wpisz tu pomiar B1 z pomiary.md, inaczej klawisz moze miec skrocony skok.")
+            print("         Zrob kalibracja/01-gniazdo-mx zanim uznasz keycapa za gotowego.")
+        if od_dolu is not None and abs(od_dolu - 7.00) < 1e-6:
+            print("  UWAGA: gniazdo_od_dolu = 7.000 mm to ostrozna wartosc startowa.")
+            print("         Po pierwszym wydruku porownaj z sasiadem i popraw (pomiary.md).")
 
     print("=" * 62)
 

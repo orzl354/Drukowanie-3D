@@ -1,5 +1,8 @@
 # Lekcja 1 — keycap 1u na przełącznik MX (FreeCAD, Part Design)
 
+> **Szukasz konkretnej listy „co robić teraz"?** → [`START.md`](START.md).
+> Ten plik jest instrukcją do samego modelowania; START ustawia kolejność całej sesji.
+
 **Cel:** zbudować w pełni parametryczny keycap, który wejdzie na przełącznik w GK630K,
 i przy okazji nauczyć się szkieletu pracy w Part Design: arkusz → szkic → Loft → Thickness → Pocket.
 
@@ -101,25 +104,46 @@ Wypełnij tak — opis w kolumnie A, wartość w B, alias na komórce B:
 | 1 | szerokość podstawy | `18 mm` | `szer_podstawy` |
 | 2 | szerokość wierzchu | `13.5 mm` | `szer_gory` |
 | 3 | grubość ścianki | `1.2 mm` | `gr_scianki` |
-| 4 | głębokość wewnętrzna (Z POMIARU!) | `7.8 mm` | `gleb_wew` |
-| 5 | wysokość całkowita | `=gleb_wew + gr_scianki` | `wys_calk` |
-| 6 | ramię krzyża MX (nominał) | `4.1 mm` | `krzyz_ramie` |
-| 7 | grubość ramienia MX (nominał) | `1.17 mm` | `krzyz_grubosc` |
-| 8 | luz gniazda (Z KALIBRACJI!) | `0.1 mm` | `krzyz_luz` |
-| 9 | głębokość gniazda | `4 mm` | `gniazdo_gleb` |
-| 10 | wysokość bossa | `=gniazdo_gleb + 0.2 mm` | `boss_wys` |
-| 11 | średnica bossa | `7 mm` | `boss_srednica` |
+| 4 | **wysokość całkowita** | `9.5 mm` | `wys_calk` |
+| 5 | **od dolnej krawędzi do dna gniazda** | `7 mm` | `gniazdo_od_dolu` |
+| 6 | głębokość gniazda | `4 mm` | `gniazdo_gleb` |
+| 7 | ramię krzyża MX (nominał) | `4.1 mm` | `krzyz_ramie` |
+| 8 | grubość ramienia MX (nominał) | `1.17 mm` | `krzyz_grubosc` |
+| 9 | luz gniazda (Z KALIBRACJI!) | `0.1 mm` | `krzyz_luz` |
+| 10 | średnica bossa | `7 mm` | `boss_srednica` |
+| 11 | dolna płaszczyzna bossa | `=gniazdo_od_dolu - gniazdo_gleb` | `boss_dol` |
+| 12 | wysokość bossa | `=wys_calk - gr_scianki - boss_dol` | `boss_wys` |
+| 13 | **kontrola:** zapas materiału nad gniazdem | `=wys_calk - gr_scianki - gniazdo_od_dolu` | `zapas` |
 
 Alias ustawiasz tak: klikasz komórkę B1 → pole **Alias** nad arkuszem → wpisujesz `szer_podstawy`
 → Enter. Komórka zrobi się żółta. **Tylko ASCII, bez polskich znaków.**
 
-Zwróć uwagę na wiersze 5 i 10 — to **formuły**, nie liczby. Wysokość całkowita nie jest
-niezależnym parametrem: wynika z tego, ile miejsca musi być w środku, plus grubość wierzchu.
-Jeśli zmienisz `gleb_wew`, wysokość poprawi się sama. O to chodzi w parametryzacji:
-opisujesz **zależności**, nie wyniki.
+Wiersze 11–13 to **formuły**, nie liczby (zaczynają się od `=`). To jest ta część
+parametryzacji, która naprawdę pracuje: opisujesz **zależności**, a nie wyniki.
+Wiersz 13 jest kontrolą — jeśli `zapas` spadnie poniżej **0,4 mm**, gniazdo przebije się
+przez wierzch klawisza. Przy wartościach startowych wychodzi 1,3 mm, czyli z zapasem.
 
-> Wartości w wierszach 4 i 8 zastąp swoimi, gdy tylko je zdobędziesz.
-> Do tego czasu model będzie się liczył, ale **nie drukuj go na produkcję** — to placeholdery.
+### Dwa parametry, dwa niezależne pokrętła
+
+To jest najważniejsza rzecz w tym arkuszu, więc nie przewijaj. Keycap wisi na trzpieniu
+w jednym punkcie: tam, gdzie czubek trzpienia dotyka **dna gniazda**. Z tego wynika:
+
+| Parametr | Co ustawia fizycznie | Po czym poznasz, że jest źle |
+|---|---|---|
+| `gniazdo_od_dolu` | jak **wysoko keycap siedzi** na przełączniku i jak nisko schodzi jego dolna krawędź | klawisz sterczy nad sąsiadami albo w nie wsiąka; przy za dużej wartości — skrócony, „twardy" skok |
+| `wys_calk` | jak **gruby jest sam keycap** od dolnej krawędzi do wierzchu | keycap wygląda na wyższy lub niższy od sąsiadów, mimo że siedzi na właściwej wysokości |
+
+Każde pokrętło ma własny, niezależny objaw — dlatego po pierwszym wydruku będziesz wiedział,
+które ruszyć. Gdybyśmy zrobili to „naturalnie" (głębokość wewnętrzna + grubość wierzchu),
+oba objawy mieszałyby się w jednej liczbie i dobieranie po wydrukach byłoby zgadywanką.
+
+> `gniazdo_od_dolu = 7 mm` jest **celowo ostrożne**. Za mała wartość = klawisz siedzi
+> odrobinę za wysoko (brzydko, ale działa). Za duża = dolna krawędź uderza w obudowę
+> przełącznika przed końcem skoku (klawisz sprawia wrażenie zepsutego). Skoro i tak
+> zgadujemy, zgadujemy w bezpieczną stronę i podnosimy po pierwszym wydruku.
+
+> Wartość w wierszu 9 (`krzyz_luz`) podmień, gdy tylko zrobisz kalibrację.
+> Do tego czasu model będzie się liczył, ale **nie drukuj go jako ostatecznego** — to placeholder.
 
 ### Krok 2 — bryła zewnętrzna (Loft)
 
@@ -160,16 +184,18 @@ o ile mniejszy ma być wewnętrzny Loft — i, co ważniejsze, grubość **zosta
 gdy zmienisz kąt ścianek.
 
 Sprawdź w widoku przekroju (`View → Clipping plane`), czy w środku faktycznie jest pusto
-i czy sufit jest na wysokości `gleb_wew`.
+i czy wewnętrzny sufit jest na wysokości `wys_calk - gr_scianki` (przy wartościach
+startowych: 8,3 mm).
 
 ### Krok 4 — boss pod gniazdo
 
 1. **Płaszczyzna bossa:** zaznacz **XY** → **Create a datum plane**, offset Z → `fx`:
    ```
-   Arkusz.gleb_wew - Arkusz.boss_wys
+   Arkusz.boss_dol
    ```
-   To jest **dolna** płaszczyzna bossa. Wysokość sufitu wewnętrznego wynosi `gleb_wew`,
-   więc boss o wysokości `boss_wys` dosunie się do niego dokładnie.
+   To jest **dolna** płaszczyzna bossa (przy wartościach startowych: 3 mm nad dolną
+   krawędzią). Boss o wysokości `boss_wys` dosunie się stąd dokładnie do wewnętrznego
+   sufitu — bo tak właśnie policzyliśmy `boss_wys` w arkuszu.
 
 2. Na tej płaszczyźnie: szkic z **okręgiem** (`G`, `C`) wyśrodkowanym na origin
    (więz pokrycia `C` środka z punktem origin), średnica (`K`, `O`) → `Arkusz.boss_srednica`.
@@ -196,8 +222,9 @@ u początkujących, a wynik jest identyczny.
    czyli poziomy = `krzyz_grubosc + krzyz_luz`, pionowy = `krzyz_ramie + krzyz_luz`.
 4. Drugi **Pocket**, te same ustawienia.
 
-Gniazdo ma teraz 4 mm głębokości w bossie wysokim na 4,2 mm — zostaje 0,2 mm „sufitu",
-żeby trzpień nie przebił się na wylot.
+Gniazdo sięga teraz dokładnie do wysokości `gniazdo_od_dolu` nad dolną krawędzią,
+a nad nim zostaje `zapas` materiału (przy wartościach startowych 1,3 mm), więc trzpień
+nie ma jak przebić się na wylot. Sprawdź to w przekroju.
 
 > **Wyzwanie (opcjonalne, na potem):** zrób ten krzyż jako **jeden** szkic — łamana
 > (`G`, `M`) o 12 odcinkach, związana przez symetrie i więzy **równości** (`E`).
