@@ -15,6 +15,58 @@ Format wpisu:
 
 ---
 
+## 2026-09-17 — drugi keycap (Larvitar) i wyniesienie narzędzi do biblioteki
+
+**Co robiłem:** rozebrałem na kolory drugi keycap tego samego autora
+(`projekty/larvitar-keycap-multicolor/`) i przy okazji wyniosłem narzędzia
+z Psyducka do `biblioteka/podzial_mmu.py`, żeby oba projekty z nich korzystały.
+
+**Czego się nauczyłem:**
+
+1. **Zanim zacznę szukać, gdzie ciąć — sprawdzić `body_count`.** Larvitar ma
+   w jednej siatce **dwie osobne, zamknięte bryły**: keycap i figurkę. Autor
+   nie zrobił z nich unii, tylko wsadził jedną w drugą na 0,33 mm. Połowa
+   roboty była już zrobiona, a ja przy Psyducku szukałem płaskiego szwu.
+   Kolejność sprawdzania: `split()` → płaski szew → dopiero cięcie.
+
+2. **Podział potrafi zepsuć drukowalność, nawet gdy geometria jest poprawna.**
+   Figurka stojąca na bazie keycapa była stabilna. Ta sama figurka jako osobna
+   część stoi na **13,8 mm² przy 18,4 mm wysokości** — bo styka się z bazą
+   tylko trzema wysepkami. Sam podział był czysty, a część i tak byłaby do
+   niczego bez cokołu i brimu. Trzeba liczyć pole styku ze stołem i wysokość
+   każdej części, nie tylko sprawdzać szczelność.
+
+3. **Cokół z przekroju.** Sposób na słaby styk: wziąć przekrój poziomy bryły
+   na płaszczyźnie styku, wyciągnąć go w dół jako pryzmę (0,8 mm), dodać do
+   figurki, a to samo bez luzu odjąć od bazy. Wychodzi złącze, które samo się
+   pozycjonuje, i płaskie dno do druku. Sprawdzić tylko, ile zostaje ścianki —
+   baza miała 1,54 mm, więc 0,8 mm kieszeni było bezpieczne.
+
+4. **Nie każdy model nadaje się na podział kolorystyczny.** Larvitar ma
+   10 obszarów ciemnej zieleni, ale tylko jeden (płyta na brzuchu, 4,3 × 2,1 ×
+   5,3 mm) ma sens jako część. Reszta to 0,24–1,8 mm. Podział opłaca się dla
+   **dużych plam koloru**; drobny wzór to i tak pędzelek. Psyduck: 8 części
+   z 4 kolorów. Larvitar: 5 części z 3 — i to przy większej liczbie obszarów.
+
+5. **Refaktor bez regresji da się sprawdzić w jednej linijce.** Przed
+   wyniesieniem kodu zrobiłem `md5sum stl/*.stl`, po wyniesieniu `md5sum -c`.
+   Osiem plików bit w bit identycznych = pewność, że przeniosłem, a nie
+   przepisałem. Warto to robić przy każdym przenoszeniu kodu, który coś liczy.
+
+6. **Podzieliłem, ale warto było się zastanowić, czy w ogóle.** Przy takim
+   modelu realna alternatywa to wydrukować go w całości multicolor i policzyć,
+   ile faktycznie idzie na wieżę. Przy Psyducku podział + sekwencja „wg obiektu”
+   dały **3 zmiany filamentu i 0,96 g odpadu** — tego się nie da pobić.
+
+**Co nie wyszło / do sprawdzenia:** nic jeszcze nie wydrukowane. Największa
+niewiadoma: czy `cialo` Larvitara utrzyma się na stole na 13,8 mm² cokołu
+i czy nawis tułowia tuż nad cokołem wyjdzie bez podpór.
+
+**Następny krok:** wydrukować oba keycapy, porównać realny odpad z tym, co
+pokazuje slicer, i zapisać zweryfikowany luz do `kalibracja/`.
+
+---
+
 ## 2026-09-17 — podział modelu malowanego MMU na osobne części kolorystyczne
 
 **Co robiłem:** wziąłem gotowy keycap „Psyduck" z MakerWorld (projekt Bambu

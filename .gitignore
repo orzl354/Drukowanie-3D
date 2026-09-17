@@ -10,6 +10,10 @@
 *.FCBak
 *~
 
+# --- Python (skrypty parametryczne w cad/ i biblioteka/) ---
+__pycache__/
+*.pyc
+
 # --- Systemowe ---
 .DS_Store
 Thumbs.db

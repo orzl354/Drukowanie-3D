@@ -1,0 +1,6 @@
+# Model zrodlowy z MakerWorld (MonsieurPierre, "Standard Digital File License")
+# - bez prawa redystrybucji, a repo jest publiczne. Odtworzenie:
+#     python3 cad/podzial_kolorow.py cad/larvitar.3mf
+cad/larvitar.3mf
+stl/*.stl
+slicer/larvitar-plyta-podzielona.3mf
