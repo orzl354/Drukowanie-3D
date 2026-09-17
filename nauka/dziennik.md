@@ -64,6 +64,20 @@ Projekt: `projekty/pingwin-keycap-multicolor/`.
    jednej płycie nadal powodują zmianę filamentu w każdej warstwie — dopiero
    kolejność druku „po obiekcie" schodzi z setek zmian do dwóch.
 
+8. **Tryb „po obiekcie" dyktuje układ płyty, nie odwrotnie.** Upakowałem części
+   ciasno (81 × 21 mm), a w tym trybie głowica objeżdża to, co już stoi, i wg
+   profilu A1 potrzebuje wokół siebie **73 mm** (`extruder_clearance_max_radius`).
+   Do tego `extruder_clearance_height_to_rod` = **25 mm** — powyżej tego belka
+   portalu może zahaczyć o gotowy wydruk. Korpus ma 34 mm, więc musi być ostatni;
+   wtedy nic już nad nim nie przejeżdża.
+
+9. **Kolejność druku „po obiekcie" bierze się z listy obiektów, nie z położenia.**
+   A lista to po prostu kolejność `<object>` w `3dmodel.model` — więc kolejność da
+   się zapiec w pliku 3MF i nie trzeba nic przeciągać. W slicerze przeciąga się
+   wiersze w `Proces` → `Obiekty`, a Ctrl+E pokazuje podpisy `Sekwencja#`.
+   Uwaga: „od lewej do prawej" i „mało zmian filamentu" to dwa różne wymagania —
+   pokrywają się tylko wtedy, gdy części ustawi się na płycie grupami kolorów.
+
 **Co nie wyszło / do sprawdzenia:** nic jeszcze nie wydrukowane. Największy znak
 zapytania to trzonek MX przy dyszy 0,4 mm (oryginał robiony pod 0,2 mm) — ścianki
 krzyża ~1,2 mm i luzy ~1,3 mm są na granicy tego, co 0,4 trafia wymiarowo.

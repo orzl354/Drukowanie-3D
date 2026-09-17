@@ -49,21 +49,27 @@ montażowe (kontrola w skrypcie pokazuje 1,23 % — dokładnie tyle, ile wynosz�
 
 ### Części
 
-| # | plik | kolor | gabaryty [mm] | orientacja na stole | podpory |
+Numeracja plików = **kolejność druku** (pogrupowana kolorami, korpus na końcu):
+
+| # | plik | filament | gabaryty [mm] | orientacja na stole | podpory |
 |---|---|---|---|---|---|
-| 1 | `dziob` | żółty | 3,6 × 2,9 × 3,4 | płaskim tyłem na stół | nie |
-| 2 | `front` | biały | 15,3 × 19,3 × 6,0 | płaskim tyłem na stół | nie |
-| 3 | `korpus` | czarny | 24,9 × 20,8 × 34,3 | bazą keycapa na stół | **tak** |
-| 4–5 | `oko-L`, `oko-P` | czarny | ~1,8 × 2,5 × 2,0 | płaskim tyłem na stół | nie |
-| 6–7 | `stopa-L`, `stopa-P` | żółty | 5,1 × 6,8 × 2,3 | płaskim spodem na stół | nie |
-
-Wszystkie 7 części mieszczą się na polu **81 × 21 mm** — cała płyta A1 to zapas.
-
-![płyta](zdjecia/plyta.png)
+| 1 | `dziob` | 3 żółty | 3,6 × 2,9 × 3,4 | płaskim tyłem na stół | nie |
+| 2 | `stopa-L` | 3 żółty | 5,1 × 6,8 × 2,3 | płaskim spodem na stół | nie |
+| 3 | `stopa-P` | 3 żółty | 5,1 × 6,8 × 2,3 | płaskim spodem na stół | nie |
+| 4 | `front` | 2 biały | 15,3 × 19,3 × 6,0 | płaskim tyłem na stół | nie |
+| 5 | `oko-L` | 1 czarny | 1,8 × 2,5 × 2,0 | płaskim tyłem na stół | nie |
+| 6 | `oko-P` | 1 czarny | 1,7 × 2,5 × 2,1 | płaskim tyłem na stół | nie |
+| 7 | `korpus` | 1 czarny | 24,9 × 20,8 × 34,3 | bazą keycapa na stół | **tak** |
 
 Każda część ma **płaską ścianę przylegającą do stołu** (dno gniazda albo półka pod
 stopą) — dlatego tylko korpus potrzebuje podpór, i to wyłącznie pod skrzydełkami
 i pod wybrzuszeniem ciała nad bazą.
+
+`plyta-pingwin-keycap.3mf` ustawia je w **siatce 3 × 3 ze skokiem 80 mm**, rzędami
+od lewej do prawej, od przodu stołu do tyłu — czyli fizyczny układ pokrywa się
+z kolejnością druku. Korpus siedzi sam w ostatnim rzędzie.
+
+![płyta](zdjecia/plyta.png)
 
 ## Materiał
 
@@ -101,19 +107,58 @@ Sam podział na części **nie wystarczy**: jeśli położysz na płycie obiekty
 w różnych kolorach i zostawisz domyślną kolejność „po warstwie", drukarka i tak
 będzie zmieniać filament w każdej warstwie. Trzeba jedno z dwóch:
 
-**A. Jedna płyta, 2 zmiany filamentu** *(polecam)* — w Bambu Studio ustaw
-**kolejność druku: „po obiekcie"**. Drukarka kończy cały obiekt, zanim przejdzie
-do następnego, więc zmian filamentu jest tyle, ile grup kolorów minus jeden —
-czyli **dwie**. Najwyższa część (korpus, 34,3 mm) mieści się w limicie wysokości
-A1 dla tego trybu, ale slicer i tak to sprawdzi i ostrzeże.
+**A. Jedna płyta, 2 zmiany filamentu** *(polecam)* — `Inne` → `Tryb specjalny` →
+**Kolejność druku: „po obiekcie"**. Drukarka kończy cały obiekt, zanim przejdzie
+do następnego.
 
 **B. Jedna płyta, zero zmian** — zostaw kolejność „po warstwie", ale wyłącz
 drukowanie części w innych kolorach (prawy przycisk na obiekcie → *Printable*)
-i puść płytę **trzy razy**: raz czarne, raz biały, raz żółte. Zero odpadu,
+i puść płytę **trzy razy**: raz żółte, raz biały, raz czarne. Zero odpadu,
 kosztem trzech startów.
 
-Czego **nie** robić: nie zostawiać domyślnej kolejności „po warstwie" ze wszystkimi
-kolorami naraz — to dokładnie ten scenariusz, od którego uciekamy.
+### Kolejność druku „po obiekcie"
+
+Kolejność bierze się **wyłącznie z listy obiektów, nie z położenia na płycie**.
+W lewym panelu, w sekcji `Proces`, przełącz `Globalne` → **`Obiekty`**: to jest
+lista obiektów i **kolejność druku ustawia się przeciąganiem wierszy** (obiekt
+wyżej na liście drukuje się wcześniej). Przeciąganie działa tylko przy
+„po obiekcie" — przy „po warstwie" Bambu Studio je blokuje.
+**Ctrl+E** włącza i wyłącza podpisy `Sekwencja#` pod obiektami na płycie.
+
+W `plyta-pingwin-keycap.3mf` kolejność jest już ustawiona — obiekty idą w pliku
+w kolejności druku, więc nic nie trzeba przeciągać:
+
+```
+1 dziob    2 stopa-L   3 stopa-P     <- filament 3 (żółty)
+4 front                              <- filament 2 (biały)   ← 1. zmiana
+5 oko-L    6 oko-P     7 korpus      <- filament 1 (czarny)  ← 2. zmiana
+```
+
+Czyli **dwie zmiany filamentu na cały model**. Kolejność „od lewej do prawej"
+sama z siebie tego nie daje — gdyby kolory się w niej przeplatały, zmian byłoby
+sześć. Dlatego układ na płycie jest ustawiony tak, żeby kolejność od lewej do
+prawej **pokrywała się z grupami kolorów**.
+
+### Dlaczego korpus jest ostatni
+
+To nie estetyka, to liczby z profilu A1:
+
+| | |
+|---|---|
+| `extruder_clearance_height_to_rod` | **25 mm** — powyżej tej wysokości belka portalu może zahaczyć o gotowy wydruk |
+| `extruder_clearance_max_radius` | **73 mm** — tyle miejsca głowica potrzebuje wokół siebie, żeby objechać to, co już stoi |
+| wysokość `korpus` | **34,3 mm** |
+
+Korpus przekracza 25 mm, więc Bambu Studio pokazuje **„korpus jest zbyt wysoki,
+mogą wystąpić kolizje"**. Drukowany **jako ostatni** przestaje być problemem —
+po nim głowica nie musi już nad niczym przejeżdżać. Ostrzeżenie może zostać
+(sprawdzanie jest zachowawcze); warto to potwierdzić w `Podglądzie`, przewijając
+ruchy jałowe ostatniego obiektu.
+
+Z tych samych 73 mm wynika, że w trybie „po obiekcie" części **muszą** stać
+daleko od siebie — dlatego skok siatki to 80 mm, a nie 4 mm jak przy zwykłym
+druku warstwowym. Jeśli slicer i tak marudzi na odstępy, kliknij
+**Rozmieść automatycznie** — przesuwa części, ale **nie zmienia ich kolejności**.
 
 ## Montaż
 
@@ -188,7 +233,21 @@ jednobryłowe, spójne orientacyjnie), **nic jeszcze nie wydrukowane**.
    **Wydrukuj najpierw sam `korpus` i przymierz go do przełącznika**, zanim
    pójdzie reszta.
 
-8. **Drobiazg, który wypadł przy podziale:** oryginał ma w oczach malutkie białe
+8. **Tryb „po obiekcie" dyktuje układ płyty, nie odwrotnie.** Najpierw upakowałem
+   części ciasno (81 × 21 mm, odstęp 4 mm) — i to jest bezużyteczne, bo w tym trybie
+   głowica objeżdża to, co już stoi, i potrzebuje wokół siebie 73 mm. Bambu Studio
+   samo to naprawia („Rozmieść automatycznie"), ale wtedy rozrzuca części
+   i traci się kontrolę nad tym, co gdzie leży. Lepiej od razu generować siatkę
+   ze skokiem 80 mm, w kolejności druku.
+
+9. **Kolejność druku siedzi w kolejności obiektów w pliku 3MF.** Slicer nie czyta
+   jej z położenia na płycie — bierze ją z listy obiektów, a lista to po prostu
+   kolejność `<object>` w `3dmodel.model`. Więc kolejność da się zapiec w pliku
+   i nie trzeba nic przeciągać ręcznie. Przy okazji: „od lewej do prawej" i „mało
+   zmian filamentu" to dwa różne wymagania — muszą się pokrywać celowo, przez
+   ustawienie części na płycie grupami kolorów.
+
+10. **Drobiazg, który wypadł przy podziale:** oryginał ma w oczach malutkie białe
    błyski (0,6 mm² każdy, 0,7 × 0,4 mm). Przy dyszy 0,4 mm to mniej niż dwie
    ścieżki — nie da się tego zrobić osobną częścią, więc zostały scalone z czarnym
    okiem. Jeśli chcesz je odtworzyć, najprościej kropką białego markera olejowego

@@ -55,8 +55,17 @@ LUZ_DNO         = 0.15   # szczelina na klej na dnie gniazda
 Z_NAD_BAZA      = 0.10   # ile ponad gorna plaszczyzna bazy keycapa zaczyna sie ciecie
 MIN_POLE_PLAMY  = 1.0    # mm2 - mniejsze plamy malowania scalam z otoczeniem (szum)
 MIN_OBJ_BRYLY   = 0.05   # mm3 - mniejsze bryly (odpryski z booleanow) wyrzucam
-ODSTEP_NA_PLYCIE= 4.0    # odstep miedzy czesciami na plycie
 PLYTA           = (256.0, 256.0)   # pole robocze Bambu Lab A1
+# Tryb "kolejnosc druku: po obiekcie" wymaga rozsuniecia czesci - glowica objezdza
+# to, co juz wydrukowane. Dla A1: extruder_clearance_max_radius = 73 mm,
+# extruder_clearance_height_to_rod = 25 mm (powyzej tej wysokosci grozi zahaczenie
+# belka). Dlatego siatka z duzym skokiem, a najwyzsza czesc drukowana na koniec.
+SKOK_SIATKI     = 80.0   # odstep osi czesci na plycie (tryb "po obiekcie")
+KOLUMNY         = 3      # ile czesci w rzedzie (od lewej do prawej)
+# Kolejnosc druku = kolejnosc na tej liscie = kolejnosc obiektow w 3MF.
+# Pogrupowana kolorami (zolty -> bialy -> czarny), wiec tylko 2 zmiany filamentu,
+# a korpus (najwyzszy, 34 mm) jest ostatni.
+KOLEJNOSC_DRUKU = ["dziob", "stopa-L", "stopa-P", "front", "oko-L", "oko-P", "korpus"]
 UPROSZCZ_KONTUR = 0.01   # uproszczenie konturu cienia (Douglas-Peucker)
 UPROSZCZ_SIATKE = 0.01   # mm - dopuszczalne odchylenie przy upraszczaniu siatki (0 = bez)
 # mapowanie kodu paint_color -> numer filamentu w Bambu Studio
@@ -485,45 +494,41 @@ def obroc_do_druku(P, nazwa):
     return Q
 
 
+def kolejnosc(czesci):
+    """Kolejnosc druku: wg KOLEJNOSC_DRUKU, reszta (jesli jakas) na koniec."""
+    znane = [nm for nm in KOLEJNOSC_DRUKU if nm in czesci]
+    return znane + sorted(set(czesci) - set(znane))
+
+
 def rozmiesc(czesci, log=print):
-    """Uklada czesci w rzedach na jednej plycie. Zwraca {nazwa: (dx, dy)} - samo
-       przesuniecie, bo siatki zostaja przy poczatku ukladu (float32 w STL/3MF ma
-       przy x~128 mm osiem razy grubszy krok niz przy x~0 i potrafi skleic
-       sasiednie wierzcholki w niemanifoldowa krawedz)."""
-    gab = {nm: (P[:, 0].max() - P[:, 0].min(), P[:, 1].max() - P[:, 1].min())
-           for nm, (P, F) in czesci.items()}
-    kol = sorted(czesci, key=lambda nm: -gab[nm][1])      # najwyzsze w Y na poczatek
-    limit_rzedu = max(gab[nm][0] for nm in kol) * 3 + ODSTEP_NA_PLYCIE * 2
-    rzedy, biezacy, szer = [], [], 0.0
-    for nm in kol:
-        w = gab[nm][0]
-        if biezacy and szer + ODSTEP_NA_PLYCIE + w > limit_rzedu:
-            rzedy.append(biezacy)
-            biezacy, szer = [], 0.0
-        szer += (ODSTEP_NA_PLYCIE if biezacy else 0) + w
-        biezacy.append(nm)
-    if biezacy:
-        rzedy.append(biezacy)
-
-    srodki, y = {}, 0.0
-    for rz in rzedy:
-        x, h = 0.0, max(gab[nm][1] for nm in rz)
-        for nm in rz:
-            srodki[nm] = (x + gab[nm][0] / 2, y + h / 2)
-            x += gab[nm][0] + ODSTEP_NA_PLYCIE
-        y += h + ODSTEP_NA_PLYCIE
-    szer_c = max(sum(gab[nm][0] for nm in rz) + ODSTEP_NA_PLYCIE * (len(rz) - 1) for rz in rzedy)
-    wys_c = y - ODSTEP_NA_PLYCIE
-    if szer_c > PLYTA[0] - 10 or wys_c > PLYTA[1] - 10:
-        log("UWAGA: uklad %.1f x %.1f mm nie miesci sie na plycie!" % (szer_c, wys_c))
-    log("uklad na plycie: %.1f x %.1f mm, %d rzedy" % (szer_c, wys_c, len(rzedy)))
-
+    """Uklada czesci w rzedach od lewej do prawej, w kolejnosci druku: pierwsza
+       czesc lewy-przedni naroznik, potem w prawo, potem rzad dalej od operatora.
+       Zwraca {nazwa: (dx, dy)} - samo przesuniecie, bo siatki zostaja przy poczatku
+       ukladu (float32 w STL/3MF ma przy x~128 mm osiem razy grubszy krok niz przy
+       x~0 i potrafi skleic sasiednie wierzcholki w niemanifoldowa krawedz)."""
+    kol = kolejnosc(czesci)
+    wiersze = (len(kol) + KOLUMNY - 1) // KOLUMNY
+    szer_c = (KOLUMNY - 1) * SKOK_SIATKI
+    wys_c = (wiersze - 1) * SKOK_SIATKI
     x0, y0 = (PLYTA[0] - szer_c) / 2, (PLYTA[1] - wys_c) / 2
+
     przes = {}
-    for nm, (P, F) in czesci.items():
-        cx, cy = srodki[nm]
-        przes[nm] = (x0 + cx - (P[:, 0].min() + P[:, 0].max()) / 2,
-                     y0 + cy - (P[:, 1].min() + P[:, 1].max()) / 2)
+    for i, nm in enumerate(kol):
+        P = czesci[nm][0]
+        cx = x0 + (i % KOLUMNY) * SKOK_SIATKI
+        cy = y0 + (i // KOLUMNY) * SKOK_SIATKI
+        przes[nm] = (cx - (P[:, 0].min() + P[:, 0].max()) / 2,
+                     cy - (P[:, 1].min() + P[:, 1].max()) / 2)
+        log("    %d. %-8s -> X %6.1f  Y %6.1f  (filament %d, %s)"
+            % (i + 1, nm, cx, cy, FILAMENT_CZESCI.get(nm, 1),
+               FILAMENT_OPIS[FILAMENT_CZESCI.get(nm, 1)][0]))
+    zajete_x = max(P[:, 0].max() - P[:, 0].min() for P, _ in czesci.values()) + szer_c
+    zajete_y = max(P[:, 1].max() - P[:, 1].min() for P, _ in czesci.values()) + wys_c
+    if zajete_x > PLYTA[0] - 10 or zajete_y > PLYTA[1] - 10:
+        log("UWAGA: uklad %.0f x %.0f mm nie miesci sie na plycie - zmniejsz SKOK_SIATKI"
+            % (zajete_x, zajete_y))
+    log("uklad: %d kolumn x %d rzedow, skok %.0f mm, zajete ~%.0f x %.0f mm"
+        % (KOLUMNY, wiersze, SKOK_SIATKI, zajete_x, zajete_y))
     return przes
 
 
@@ -533,9 +538,14 @@ FILAMENT_CZESCI = {"korpus": 1, "front": 2, "dziob": 3, "stopa-L": 3, "stopa-P":
 
 def zapisz_3mf(sciezka, czesci, przes):
     """Plyta jako 3MF: siatki lokalne, pozycja w <item transform>, filament na obiekt
-       w model_settings.config (rozszerzenie Bambu Studio / Orca)."""
+       w model_settings.config (rozszerzenie Bambu Studio / Orca).
+
+       Kolejnosc obiektow w pliku = kolejnosc na liscie obiektow w slicerze =
+       kolejnosc druku w trybie "po obiekcie". Dlatego obiekty ida w KOLEJNOSC_DRUKU,
+       a nie alfabetycznie - inaczej trzeba je potem przeciagac recznie."""
     obj_xml, item_xml, cfg = [], [], []
-    for i, (nm, (P, F)) in enumerate(sorted(czesci.items()), start=1):
+    for i, nm in enumerate(kolejnosc(czesci), start=1):
+        P, F = czesci[nm]
         v = "\n".join('     <vertex x="%.6f" y="%.6f" z="%.6f"/>' % tuple(p) for p in P)
         t = "\n".join('     <triangle v1="%d" v2="%d" v3="%d"/>' % tuple(f) for f in F)
         obj_xml.append('  <object id="%d" type="model">\n   <mesh>\n    <vertices>\n%s\n    </vertices>\n'
@@ -607,7 +617,7 @@ def main():
                                                                # nim moze znow skleic
                                                                # wierzcholki w float32
     przes = rozmiesc(gotowe)
-    for i, nm in enumerate(sorted(gotowe), start=1):
+    for i, nm in enumerate(kolejnosc(gotowe), start=1):
         Pp, Fp = gotowe[nm]
         nazwa = "%d-%s-%s.stl" % (i, nm, FILAMENT_OPIS[FILAMENT_CZESCI[nm]][0])
         zapisz_stl(os.path.join(wyj, nazwa), Pp, Fp, nazwa)
