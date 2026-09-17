@@ -15,6 +15,76 @@ Format wpisu:
 
 ---
 
+## 2026-09-17 — podział modelu malowanego MMU na osobne części kolorystyczne
+
+**Co robiłem:** wziąłem gotowy keycap „Psyduck" z MakerWorld (projekt Bambu
+Studio z malowaniem MMU na 4 kolory) i rozciąłem go na 8 osobnych brył — po
+jednej na kolor — żeby drukować bez zmian filamentu i bez wieży czyszczącej.
+Projekt: `projekty/psyduck-keycap-multicolor/`.
+
+**Czego się nauczyłem:**
+
+1. **Malowanie MMU w 3MF to gotowa mapa cięcia.** Atrybut `paint_color` przy
+   trójkącie to zserializowane drzewo podziału (kodowanie `TriangleSelector`
+   z PrusaSlicer): 2 bity „ile boków podzielonych", potem albo rekurencja,
+   albo 2 bity stanu, a przy stanie ≥3 jeszcze 4 bity. Bity czyta się od
+   **ostatniego znaku** stringa, w każdym półbajcie od najmłodszego. 4402
+   pomalowane trójkąty zdekodowały się bez błędu — sprawdzian poprawności to
+   „czy po zdekodowaniu zostały same zera dopełnienia".
+
+2. **Zanim zacznę ciąć, warto poszukać gotowego szwu.** Model miał płaską
+   granicę kaczka/baza keycapa na `z = -3,619` i **zero trójkątów przecinających
+   tę płaszczyznę** — ślad po tym, że autor złożył go z dwóch brył. Cięcie tam
+   jest darmowe i idealne. Szukanie takich miejsc = policzyć, ile ścian przecina
+   kandydującą płaszczyznę.
+
+3. **Czop i gniazdo z tej samej powierzchni.** Zamiast robić gniazdo osobno:
+   buduję bryłę „powierzchnia obszaru + ścianki wzdłuż kierunku + płaskie dno"
+   dwa razy — raz ze zbieżnością (czop), raz bez (gniazdo). Krawędź na
+   powierzchni jest w obu identyczna, więc **szew jest niewidoczny**, a luz
+   siedzi dopiero w głębi, gdzie i tak potrzeba miejsca na klej. Lepsze niż
+   równomierny luz, który daje widoczną szczelinę dookoła.
+
+4. **Kierunek czopa to decyzja montażowa.** Dziób wyciągnięty poziomo w głąb
+   głowy wyglądał poprawnie, a jego gniazdo **zachodziło na gniazda oczu** —
+   nie dałoby się włożyć obu. Przechylenie czopa o 30° w dół rozwiązało sprawę.
+   Wniosek: test „czy któreś dwie części się przenikają" (boolean intersection
+   każdej pary) musi być w skrypcie na stałe, bo okiem tego nie widać.
+
+5. **Odsunięcie wielokąta do środka — dwie pułapki naraz.** Znak normalnej
+   trzeba wziąć z pola ze znakiem (CCW → wnętrze po lewej, `[-ey, ex]`),
+   a na narożniku iść po dwusiecznej `d·(n₁+n₂)/(1+n₁·n₂)`, nie po
+   znormalizowanej sumie. Pomyliłem znak i **czopy wyszły większe od gniazd** —
+   wszystkie testy „czy bryła szczelna" przechodziły, bo szczelna była.
+   Złapał to dopiero test **„czop minus gniazdo = 0 mm³"**. Morał: sprawdzać
+   relację między częściami, nie tylko poprawność każdej z osobna.
+
+6. **`is_watertight` nie wystarcza.** Po cięciu płaszczyzną `slice_mesh_plane`
+   zostawiło 56 zdegenerowanych ścian o zerowym polu — bryła „prawie" szczelna,
+   ale boolean ją odrzucał („Not all meshes are volumes"). Cięcie tą samą
+   płaszczyzną, ale jako **boolean z dużym prostopadłościanem** (manifold3d),
+   dało czysty wynik. Do kompletu: po erozji obrysu zostają okruchy 0,02 mm³
+   jako osobne bryły — stąd kontrola `body_count == 1`.
+
+7. **Nie każdy kolor nadaje się na osobną część.** Źrenice mają 0,5 × 0,25 mm
+   i leżą **płasko** na kule oka (odchyłka −0,02 mm — czyli to czyste malowanie,
+   nie geometria). Nozdrza 0,5 × 0,9 mm. Granica sensu przy dyszy 0,4 to
+   mniej więcej 1,5–2 mm najmniejszego wymiaru — poniżej tego marker, nie klej.
+
+8. **Jedna płyta ≠ jedno zadanie.** Rozmieszczenie 4 kolorów na jednej płycie
+   samo z siebie nie eliminuje zmian filamentu — na jednej dyszy i tak byłyby
+   co warstwę. Bez zmian = 4 osobne zadania z tej samej płyty, przełączając
+   obiekty na „niedrukowalne".
+
+**Co nie wyszło / do sprawdzenia:** nic jeszcze nie wydrukowane. Do weryfikacji
+na A1: czy luz 0,10 mm jest dobry dla wciskanych czopów, czy skośny strop
+gniazda dzioba nie obwiśnie za bardzo, czy włoski 0,5 mm wyjdą.
+
+**Następny krok:** wydrukować 4 zadania i złożyć; wynik luzu przenieść do
+`kalibracja/` jako punkt odniesienia dla wklejanych wkładek kolorystycznych.
+
+---
+
 ## 2026-08-29 — uchwyt na telefon: pierwszy projekt parametryczny
 
 **Co robiłem:** zaprojektowałem uchwyt na telefon na biurko (zacisk na krawędź

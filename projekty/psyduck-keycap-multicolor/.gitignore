@@ -1,0 +1,8 @@
+# Model zrodlowy pochodzi z MakerWorld (autor: MonsieurPierre,
+# "Standard Digital File License") - licencja nie pozwala na redystrybucje
+# pliku ani prac pochodnych. To repo jest PUBLICZNE, wiec geometrii tu nie
+# trzymamy. Wszystko odtwarza sie w kilka sekund:
+#     python3 cad/podzial_kolorow.py cad/psyduck_keycap.3mf
+cad/psyduck_keycap.3mf
+stl/*.stl
+slicer/psyduck-plyta-podzielona.3mf
