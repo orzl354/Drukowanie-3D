@@ -17,3 +17,15 @@ desktop.ini
 
 # UWAGA: projekty .3mf z Bambu Studio (te BEZ ".gcode" w nazwie) są
 # wersjonowane celowo - to pliki źródłowe z ustawieniami procesu.
+
+# --- Modele z zewnatrz (MakerWorld/Printables/Thingiverse) ---
+# Pliki modeli na licencjach typu "Standard Digital File License" NIE moga trafic
+# do publicznego repo - takze ich pochodne (pociete, przeskalowane, poprawione).
+# Trzymamy u siebie tylko skrypty, ktore odtwarzaja obrobke z wlasnego pliku.
+projekty/pingwin-keycap-multicolor/stl/*
+!projekty/pingwin-keycap-multicolor/stl/CZYTAJ.md
+projekty/pingwin-keycap-multicolor/slicer/*
+
+# --- Python ---
+__pycache__/
+*.pyc

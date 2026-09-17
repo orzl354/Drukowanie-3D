@@ -16,8 +16,15 @@ Zasady pracy, sprzęt, tolerancje i konwencje — patrz [`CLAUDE.md`](CLAUDE.md)
 | `kalibracja/` | wyniki testów: tolerancje, temp tower, flow, bridging |
 | `biblioteka/` | własne komponenty wielokrotnego użytku |
 
+## Projekty
+
+| Projekt | Co to | Status |
+|---|---|---|
+| [`uchwyt-telefon-biurko`](projekty/uchwyt-telefon-biurko/) | uchwyt na telefon z zaciskiem na blat, parametryczny OpenSCAD | szkic |
+| [`pingwin-keycap-multicolor`](projekty/pingwin-keycap-multicolor/) | podział modelu malowanego kolorami na części jednokolorowe (druk bez zmian filamentu) | szkic |
+
 ## Status
 
-Repo świeżo założone — brak projektów i brak własnych pomiarów kalibracyjnych.
+Nic jeszcze nie wydrukowane i brak własnych pomiarów kalibracyjnych.
 Tolerancje podane w `CLAUDE.md` są **wartościami startowymi**, do zweryfikowania
 drukiem na tym konkretnym egzemplarzu drukarki.

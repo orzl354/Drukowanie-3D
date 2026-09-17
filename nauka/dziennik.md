@@ -15,6 +15,63 @@ Format wpisu:
 
 ---
 
+## 2026-09-17 — podział modelu malowanego kolorami na części jednokolorowe
+
+**Co robiłem:** rozbiłem gotowy, malowany wielokolorowo model 3MF (pingwin-keycap
+z MakerWorld) na 7 części jednokolorowych, żeby wydrukować go bez zmian filamentu
+i bez wieży czyszczącej, wszystko na jednej płycie.
+Projekt: `projekty/pingwin-keycap-multicolor/`.
+
+**Czego się nauczyłem:**
+
+1. **Kolor w 3MF to malowanie POWIERZCHNI, nie bryły.** Atrybut `paint_color` siedzi
+   na pojedynczym trójkącie. Żadna płaszczyzna nie rozdzieli takich plam — sposób,
+   który działa, to zamiana plamy na bryłę: powierzchnia modelu z przodu, płaska
+   ściana z tyłu. Ta płaska ściana rozwiązuje przy okazji drugi problem: daje
+   każdej części naturalną płaszczyznę do położenia na stole, więc podpory
+   potrzebuje tylko korpus.
+
+2. **Kierunek rzutowania musi być wspólny dla wszystkich plam.** Kuszące było
+   rzutować każdą plamę wzdłuż jej własnej normalnej, ale wtedy obszary cięcia
+   sąsiednich plam albo zachodzą na siebie, albo zostawiają papierowe wióry.
+   Jeden wspólny kierunek jest lokalnie gorszy, za to daje podział dokładny —
+   kontrola „suma objętości części = objętość bryły minus luzy" wychodzi co do mm³.
+
+3. **Sylwetkę plamy licz jako sumę rzutów trójkątów, nie z konturu brzegu.**
+   Stopy zawijają się do tyłu (42 % ich pola patrzy w bok albo do tyłu) i rzut
+   konturu brzegu sam się przecina. Suma rzutów trójkątów z regułą NonZero jest
+   na to odporna.
+
+4. **Orientacja druku znowu wymusiła zmianę konstrukcji** — tak jak przy uchwycie.
+   Chciałem zostawić oczy jako czopki na czarnym korpusie i zrobić dziury w białym
+   froncie. Ale gniazdo frontu ma 6 mm głębokości, więc czopek oka wyszedłby
+   1,9 × 1,0 × 3,8 mm sterczący **poziomo w powietrzu** w środku wnęki. Nie do
+   wydrukowania. Oczy musiały zostać osobnymi wtopkami.
+
+5. **Modele z „Image to 3D" mają ukryte śmieci w siatce.** 1,49 mln trójkątów
+   (0,02 mm na trójkąt), 323 krawędzie brzegowe, 320 krawędzi użytych 3 razy —
+   mikroskopijne płatki 0,02 mm. Slicer tego nie pokazuje, ale żaden boolean
+   takiej siatki nie ruszy. Plus 463 plamki malowania < 1 mm² — szum po malowaniu.
+
+6. **`float32` w STL potrafi rozszczelnić poprawną siatkę.** Części wychodziły
+   szczelne, a po zapisie do STL już nie. Przy x ≈ 128 mm (środek płyty) krok
+   `float32` jest osiem razy grubszy niż przy zerze i skleja sąsiednie wierzchołki
+   w krawędź niemanifoldową. Wniosek na przyszłość: **siatkę domykaj na samym
+   końcu, po wszystkich przesunięciach**, a pozycję na płycie nieś transformacją
+   w 3MF, nie wpisuj jej w współrzędne wierzchołków.
+
+7. **Podział na części to dopiero połowa roboty.** Same jednokolorowe obiekty na
+   jednej płycie nadal powodują zmianę filamentu w każdej warstwie — dopiero
+   kolejność druku „po obiekcie" schodzi z setek zmian do dwóch.
+
+**Co nie wyszło / do sprawdzenia:** nic jeszcze nie wydrukowane. Największy znak
+zapytania to trzonek MX przy dyszy 0,4 mm (oryginał robiony pod 0,2 mm) — ścianki
+krzyża ~1,2 mm i luzy ~1,3 mm są na granicy tego, co 0,4 trafia wymiarowo.
+Drugi: luz wtopek 0,10 mm — wciąż liczba z `CLAUDE.md`, nie z pomiaru.
+
+**Następny krok:** wydrukować sam `korpus` i przymierzyć do przełącznika, zanim
+pójdzie reszta. To jeden druk i rozstrzyga, czy cała reszta ma sens.
+
 ## 2026-08-29 — uchwyt na telefon: pierwszy projekt parametryczny
 
 **Co robiłem:** zaprojektowałem uchwyt na telefon na biurko (zacisk na krawędź
