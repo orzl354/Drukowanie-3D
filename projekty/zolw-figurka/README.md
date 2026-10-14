@@ -25,10 +25,18 @@ zmieniło cztery rzeczy:
 | ryjek | zwężający się stożek | **płaski dysk z dwiema dziurkami** |
 | nogi | długie słupki | **krótkie, przysadziste, z dużymi pazurami** |
 | rant pancerza | gładki | **kolce dookoła** |
+| szyja | prosty skos | **łuk: 58° przy pancerzu → 46° pod głową** |
+| pysk | zamknięty | **rozwarty na 40°** |
 
 Oczy są samymi wypukłymi gałkami. Ciężkie powieki, które postać ma na rysunku,
 to kreska — łatwiej je domalować niż wydrukować, a próba zrobienia ich
 geometrią dawała efekt guzika z kapeluszem.
+
+**Groźny wyraz robi rozwarta paszcza, nie oczy.** Jest wycinana klinem
+o rozwarciu `PYSK_ROZWARCIE = 40°`, sięgającym `0.74 × GLOWA_DL` w głąb
+łba — i to już po remeshu, bo voxel 0,35 mm zalałby szczelinę, a boolean
+na samoprzecinającej się siatce i tak jest nieokreślony. `PYSK_ROZWARCIE = 0`
+daje pysk zamknięty.
 
 ## Skalowanie
 
@@ -55,7 +63,7 @@ i najłatwiej się maluje (PETG trzeba odtłuścić i gorzej trzyma podkład).
 
 | część | gabaryty [mm] | orientacja | podpory |
 |---|---|---|---|
-| `zolw-cialo` | 104 × 75 × 52 | jak stoi, na stopach | **tak — tylko pod brzuchem** |
+| `zolw-cialo` | 115 × 75 × 54 | jak stoi, na stopach | **tak — tylko pod brzuchem** |
 | `zolw-pancerz` | 72 × 66 × 36 | kopułą do góry, płaską podstawą na stół | **nie** |
 
 ### Podpory — co i dlaczego
@@ -66,17 +74,16 @@ bardziej niż 45°, z pominięciem tego, co leży na stole):
 
 | część | powierzchnia | zwisy | gdzie |
 |---|---|---|---|
-| `zolw-cialo` | 11 142 mm² | **2 143 mm²** (19 %) | spód brzucha, powyżej 8 mm |
+| `zolw-cialo` | 11 142 mm² | **2 373 mm²** (21 %) | spód brzucha, powyżej 8 mm |
 | `zolw-pancerz` | 11 373 mm² | **31 mm²** | tylko dna gniazd na kołki |
 
 Czyli: **pancerz drukuj bez podpór**, ciało z podporami, ale ustawionymi na
 *„tylko od płyty"* — wyrosną spod brzucha, między nogami, i po oderwaniu
 zostaną ślady na spodzie, którego i tak nie widać na półce.
 
-Szyja podpór **nie** potrzebuje: wznosi się pod **52°**, a próg samonośności
-to 45°. Skrypt wypisuje ten kąt przy każdym uruchomieniu — jeśli zmienisz
-`SZYJA_WYSUW_F` albo `GLOWA_Z_F` i spadnie poniżej 45, spód szyi zacznie
-wisieć i trzeba będzie podpierać też ją.
+Szyja podpór **nie** potrzebuje mimo łuku: nachylenie maleje z **58°** przy
+pancerzu do **46°** pod głową, czyli nigdzie nie schodzi poniżej progu 45°.
+Skrypt wypisuje oba kąty przy każdym uruchomieniu.
 
 ### Ustawienia
 
@@ -103,8 +110,9 @@ deseń na skorupie osobno, bez obchodzenia nóg i głowy.
 **Wygenerowane, nie wydrukowane.**
 
 ```
-szyja: wznios 52 st. (spod samonosny gdy >= 45)
-cialo     trojk=85990  nonmanifold=0  ROZLACZNYCH=1  bbox=104.0 x 75.1 x 51.8 mm  V=36.5 cm3
+szyja: luk 58 -> 46 st., wysieg 21.9 mm (samonosna gdy >= 45)
+szyja: os przechodzi pod plaszczyzna posadowienia pancerza - ok
+cialo     trojk=87624  nonmanifold=0  ROZLACZNYCH=1  bbox=115.2 x 75.1 x 53.7 mm  V=37.4 cm3
 pancerz   trojk=41533  nonmanifold=0  ROZLACZNYCH=1  bbox=72.4 x 66.1 x 36.4 mm   V=82.3 cm3
 ```
 
@@ -126,6 +134,19 @@ Rzeczy, które wiem, że są niedokończone:
   fałdy nad głową. Do domalowania albo do dorobienia w modelu.
 - Kolce na rancie są drobne (ok. 5 mm przy `PANCERZ_DL = 70`); przy
   zmniejszaniu figurki zejdą poniżej sensownej granicy.
+
+### Trzecia pułapka: nóż spłaszczający wierzch ciała
+
+Wierzch ciała jest ścinany płaszczyzną, żeby pancerz miał na czym usiąść.
+Gdy szyja podniosła się bardziej, zaczęła przechodzić **ponad tę płaszczyznę
+jeszcze wewnątrz obrysu pancerza** — i ten sam nóż **uciął głowę**. Kontrola
+szczelności tego nie widziała (`nonmanifold=0`), dopiero liczba rozłącznych
+brył pokazała dwie: korpus i osobno pływającą głowę.
+
+Skrypt sprawdza to teraz sam: jeśli oś szyi wychodzi ponad płaszczyznę
+posadowienia, będąc nadal pod obrysem pancerza, wypisuje ostrzeżenie.
+Ścięty *wierzch* szyi jest w porządku i tak ma być — chowa się pod rantem,
+dokładnie jak u żywego żółwia.
 
 ### Druga pułapka: co wystaje poniżej podstawy
 
