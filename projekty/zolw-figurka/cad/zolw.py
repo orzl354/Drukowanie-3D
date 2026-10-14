@@ -41,14 +41,18 @@ KOLEC_N    = 14          # ile kolcow na rancie
 KOLEC_DL_F = 0.070
 KOLEC_R_F  = 0.030
 
-CIALO_Z0_F = 0.045       # przeswit pod brzuchem (krotkie nogi = nisko)
+CIALO_Z0_F = 0.145       # PRZESWIT POD BRZUCHEM - tulow wisi nad ziemia
+                         #   na nogach. Uwaga: od ok. 0.10 w gore brzuch
+                         #   przestaje byc samonosny i chce podpor.
 CIALO_WYS_F= 0.17
 CIALO_DL_F = 0.86
 CIALO_SZER_F = 0.74      # wzgledem szerokosci pancerza
 
 SZYJA_R_F  = 0.085       # gruba szyja
-SZYJA_DL_F = 0.40
-SZYJA_KONIEC_Z_F = 0.075
+SZYJA_WYSUW_F = 0.30     # jak daleko DO PRZODU siega szyja
+GLOWA_Z_F     = 0.60     # na jakiej wysokosci siedzi glowa (leb w gorze)
+                         #   Kat wzniosu wychodzi z tych dwoch liczb; ponizej
+                         #   ~45 st. spod szyi robi sie zwisem i trzeba podpor.
 
 GLOWA_DL_F = 0.25
 GLOWA_SZER_F = 0.22
@@ -84,7 +88,6 @@ C_SZER   = P_SZER * CIALO_SZER_F
 CIALO_GORA = CIALO_Z0 + CIALO_WYS
 
 SZYJA_R  = S * SZYJA_R_F
-SZYJA_DL = S * SZYJA_DL_F
 GLOWA_DL = S * GLOWA_DL_F
 GLOWA_SZER = S * GLOWA_SZER_F
 GLOWA_WYS  = S * GLOWA_WYS_F
@@ -227,20 +230,27 @@ for i in range(9):
     bryla((t * C_DL * 0.40, 0, CIALO_Z0 + CIALO_WYS * 0.46),
           (C_DL * 0.12, C_SZER * 0.5 * zwez, CIALO_WYS * 0.52))
 
-# --- szyja: gruba, opada ku ziemi ---------------------------------------
-SZ_PKT = 16
+# --- szyja: wznosi sie, leb do gory -------------------------------------
+#     Szyja idzie skosem w gore i lekko sie prostuje ku koncowi, wiec sylwetka
+#     to "wyjscie z pancerza -> w gore -> leb patrzy przed siebie".
+#     Kat dobrany tak, zeby SPOD szyi nigdzie nie zszedl ponizej ~45 stopni -
+#     inaczej caly ten wysieg wisi w powietrzu i wymaga podpor.
+SZ_PKT = 18
 x0, z0 = C_DL * 0.40, CIALO_Z0 + CIALO_WYS * 0.45
-x1, z1 = C_DL * 0.40 + SZYJA_DL, S * SZYJA_KONIEC_Z_F
+x1, z1 = x0 + S * SZYJA_WYSUW_F, S * GLOWA_Z_F
+kat = math.degrees(math.atan2(z1 - z0, x1 - x0))
+print('   szyja: wznios %.0f st. (spod samonosny gdy >= 45)' % kat)
 for i in range(SZ_PKT):
     t = i / (SZ_PKT - 1.0)
-    x = x0 + (x1 - x0) * t
+    # lekkie wyprostowanie ku gorze: pionowa skladowa rosnie szybciej na koncu
+    x = x0 + (x1 - x0) * (t ** 1.18)
     z = z0 + (z1 - z0) * t
     r = SZYJA_R * (1.0 - 0.14 * t)          # ledwo sie zweza - szyja jest gruba
     bryla((x, 0, z), (r, r, r * 0.95))
 
 # --- glowa: szeroka, przysadzista ---------------------------------------
-GX = x1 + GLOWA_DL * 0.30
-GZ = z1 + GLOWA_WYS * 0.10
+GX = x1 + GLOWA_DL * 0.26
+GZ = z1 + GLOWA_WYS * 0.26
 bryla((GX, 0, GZ), (GLOWA_DL * 0.50, GLOWA_SZER * 0.50, GLOWA_WYS * 0.50))
 
 # --- policzki (postac ma pyzaty pysk) -----------------------------------
@@ -357,9 +367,9 @@ for i in range(KOLEC_N):
     px = math.cos(fi) * PANCERZ_DL * 0.5 * 1.00
     py = math.sin(fi) * P_SZER * 0.5 * 1.01
     kier = math.atan2(math.sin(fi) * P_SZER, math.cos(fi) * PANCERZ_DL)
-    czesci_p.append(stozek((px, py, S * P_RANT_F * 0.9), S * KOLEC_R_F, S * 0.003,
-                           S * KOLEC_DL_F,
-                           obrot=(0, math.radians(68), kier)))
+    czesci_p.append(stozek((px, py, S * P_RANT_F * 0.9 + S * KOLEC_R_F * 1.5),
+                           S * KOLEC_R_F, S * 0.003, S * KOLEC_DL_F,
+                           obrot=(0, math.radians(58), kier)))
 pancerz = polacz(czesci_p, 'Pancerz')
 
 # KOLEJNOSC MA ZNACZENIE: najpierw remesh, potem boolean.
@@ -367,6 +377,9 @@ pancerz = polacz(czesci_p, 'Pancerz')
 # kolce). Boolean na samoprzecinajacej sie siatce jest nieokreslony - przy
 # odwrotnej kolejnosci solver skasowal cala kopule i zostawil same kolce.
 remesh(pancerz)
+# bezpiecznik: nic nie moze wystawac ponizej plaszczyzny posadowienia,
+# inaczej pancerz stanie na czubkach kolcow zamiast na plaskim spodzie
+boolean(pancerz, pudlo((0, 0, -200), (600, 600, 400)), 'DIFFERENCE')
 for kx, ky in POZ_KOLKOW:
     boolean(pancerz, walec((kx, ky, KOLEK_H / 2 - 0.6),
                            (KOLEK_D + KOLEK_LUZ) / 2, KOLEK_H + 1.0), 'DIFFERENCE')

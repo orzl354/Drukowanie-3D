@@ -39,7 +39,7 @@ PANCERZ_DL = 70.0        # dlugosc pancerza [mm]
 ```
 
 Wszystkie pozostałe wymiary to ułamki tej liczby, więc zmiana przeskalowuje
-całość z zachowaniem proporcji. Przy 70 mm figurka ma **112 × 75 × 52 mm**
+całość z zachowaniem proporcji. Przy 70 mm figurka ma **104 × 75 × 58 mm**
 po złożeniu. Chcesz mniejszą — wpisz 50 i uruchom skrypt ponownie.
 
 Uwaga przy zmniejszaniu: pazury mają `0.080 × PANCERZ_DL`, więc przy 50 mm
@@ -55,16 +55,28 @@ i najłatwiej się maluje (PETG trzeba odtłuścić i gorzej trzyma podkład).
 
 | część | gabaryty [mm] | orientacja | podpory |
 |---|---|---|---|
-| `zolw-cialo` | 112 × 75 × 20 | jak stoi, brzuchem do góry stołu | **nie** |
-| `zolw-pancerz` | 72 × 67 × 37 | kopułą do góry, płaską podstawą na stół | **nie** |
+| `zolw-cialo` | 104 × 75 × 52 | jak stoi, na stopach | **tak — tylko pod brzuchem** |
+| `zolw-pancerz` | 72 × 66 × 36 | kopułą do góry, płaską podstawą na stół | **nie** |
 
-**Dlaczego bez podpór** — to był warunek projektowy, nie przypadek:
+### Podpory — co i dlaczego
 
-- Ciało stoi na czterech stopach **i ryjku**. Ryjek opiera się o płytę i jest
-  drugim punktem podparcia, dzięki czemu szyja o wysięgu 28 mm nie wisi
-  w powietrzu. Gdyby łeb był podniesiony (parametr `SZYJA_KONIEC_Z`), szyja
-  schodziłaby pod ~20° od poziomu — daleko poza to, co drukarka zmostkuje.
-- Pancerz to kopuła z płaską podstawą, czyli zero zwisów.
+Tułów wisi **10 mm nad płytą** na czterech nogach, więc brzuch nie ma się na
+czym oprzeć. Policzone na gotowej siatce (udział powierzchni nachylonej
+bardziej niż 45°, z pominięciem tego, co leży na stole):
+
+| część | powierzchnia | zwisy | gdzie |
+|---|---|---|---|
+| `zolw-cialo` | 11 142 mm² | **2 143 mm²** (19 %) | spód brzucha, powyżej 8 mm |
+| `zolw-pancerz` | 11 373 mm² | **31 mm²** | tylko dna gniazd na kołki |
+
+Czyli: **pancerz drukuj bez podpór**, ciało z podporami, ale ustawionymi na
+*„tylko od płyty"* — wyrosną spod brzucha, między nogami, i po oderwaniu
+zostaną ślady na spodzie, którego i tak nie widać na półce.
+
+Szyja podpór **nie** potrzebuje: wznosi się pod **52°**, a próg samonośności
+to 45°. Skrypt wypisuje ten kąt przy każdym uruchomieniu — jeśli zmienisz
+`SZYJA_WYSUW_F` albo `GLOWA_Z_F` i spadnie poniżej 45, spód szyi zacznie
+wisieć i trzeba będzie podpierać też ją.
 
 ### Ustawienia
 
@@ -77,7 +89,8 @@ i najłatwiej się maluje (PETG trzeba odtłuścić i gorzej trzyma podkład).
 | Wypełnienie | 10–15 % |
 | Chłodzenie | 100 % |
 | Brim | niepotrzebny — obie części mają dużą stopę |
-| Zużycie | bryła 117 cm³ → szacunkowo **45–60 g PLA** przy 15 % |
+| Podpory | **tylko ciało**, tryb „od płyty" |
+| Zużycie | bryła 119 cm³ → szacunkowo **45–60 g PLA** przy 15 % |
 
 ### Montaż
 
@@ -90,8 +103,9 @@ deseń na skorupie osobno, bez obchodzenia nóg i głowy.
 **Wygenerowane, nie wydrukowane.**
 
 ```
-cialo     trojk=83381  nonmanifold=0  ROZLACZNYCH=1  bbox=111.7 x 75.1 x 19.6 mm  V=35.0 cm3
-pancerz   trojk=42483  nonmanifold=0  ROZLACZNYCH=1  bbox=72.4 x 66.6 x 37.2 mm   V=82.2 cm3
+szyja: wznios 52 st. (spod samonosny gdy >= 45)
+cialo     trojk=85990  nonmanifold=0  ROZLACZNYCH=1  bbox=104.0 x 75.1 x 51.8 mm  V=36.5 cm3
+pancerz   trojk=41533  nonmanifold=0  ROZLACZNYCH=1  bbox=72.4 x 66.1 x 36.4 mm   V=82.3 cm3
 ```
 
 `ROZLACZNYCH=1` to kontrola, która tu zarabia na siebie: **szczelność nie
@@ -112,6 +126,15 @@ Rzeczy, które wiem, że są niedokończone:
   fałdy nad głową. Do domalowania albo do dorobienia w modelu.
 - Kolce na rancie są drobne (ok. 5 mm przy `PANCERZ_DL = 70`); przy
   zmniejszaniu figurki zejdą poniżej sensownej granicy.
+
+### Druga pułapka: co wystaje poniżej podstawy
+
+Kolce na rancie były posadzone tak nisko i pochylone tak płasko, że schodziły
+**0,76 mm poniżej płaskiego spodu pancerza** — wydruk stałby na czternastu
+czubkach zamiast na podstawie. Nie widać tego na renderze ani w kontroli
+szczelności; wyszło dopiero z pomiaru `zmin` gotowego STL-a. Poza podniesieniem
+kolców skrypt ma teraz bezpiecznik: po remeshu ścina pancerz płaszczyzną z = 0,
+więc cokolwiek by wystawało w dół, zostanie zrównane.
 
 ### Pułapka techniczna, warto zapamiętać
 
