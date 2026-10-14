@@ -25,17 +25,27 @@ zmieniło cztery rzeczy:
 | ryjek | zwężający się stożek | **płaski dysk z dwiema dziurkami** |
 | nogi | długie słupki | **krótkie, przysadziste, z dużymi pazurami** |
 | rant pancerza | gładki | **kolce dookoła** |
-| szyja | prosty skos | **łuk: 58° przy pancerzu → 46° pod głową** |
-| pysk | zamknięty | **rozwarty na 40°** |
+| szyja | prosty skos | **łuk S: 60° przy pancerzu → 34° pod głową** |
+| łeb | zadarty o 24° | **prawie poziomy (5°)** |
+| pysk | zamknięty | **rozwarty na 54°, dolna szczęka opada** |
+| brwi | brak | **wał brwiowy nad okiem** |
 
 Oczy są samymi wypukłymi gałkami. Ciężkie powieki, które postać ma na rysunku,
 to kreska — łatwiej je domalować niż wydrukować, a próba zrobienia ich
 geometrią dawała efekt guzika z kapeluszem.
 
-**Groźny wyraz robi rozwarta paszcza, nie oczy.** Jest wycinana klinem
-o rozwarciu `PYSK_ROZWARCIE = 40°`, sięgającym `0.74 × GLOWA_DL` w głąb
-łba — i to już po remeshu, bo voxel 0,35 mm zalałby szczelinę, a boolean
-na samoprzecinającej się siatce i tak jest nieokreślony. `PYSK_ROZWARCIE = 0`
+**Groźny wyraz robi rozwarta paszcza plus wał brwiowy, nie same oczy.**
+
+Paszcza jest wycinana klinem **niesymetrycznie**: górne podniebienie biegnie
+praktycznie wzdłuż osi łba (4°), a opada tylko dolna szczęka — o całe
+`PYSK_ROZWARCIE = 54°`. Tak to działa u żywego zwierzęcia i tylko tak się to
+składa geometrycznie: przy rozwieraniu symetrycznym płaszczyzna górnej
+szczęki wychodziła **poza obrys łba**, przez co ryjek postawiony na niej
+zawisał w powietrzu jako osobna bryła, a wcześniej — gdy ryjek leżał na osi —
+klin wchłaniał go w całości i odcinał czubek.
+
+Wycinanie idzie **po remeshu**: voxel 0,35 mm zalałby szczelinę, a boolean
+na samoprzecinającej się siatce jest nieokreślony. `PYSK_ROZWARCIE = 0`
 daje pysk zamknięty.
 
 ## Skalowanie
@@ -63,7 +73,7 @@ i najłatwiej się maluje (PETG trzeba odtłuścić i gorzej trzyma podkład).
 
 | część | gabaryty [mm] | orientacja | podpory |
 |---|---|---|---|
-| `zolw-cialo` | 115 × 75 × 54 | jak stoi, na stopach | **tak — tylko pod brzuchem** |
+| `zolw-cialo` | 121 × 75 × 53 | jak stoi, na stopach | **tak — brzuch i spód szyi** |
 | `zolw-pancerz` | 72 × 66 × 36 | kopułą do góry, płaską podstawą na stół | **nie** |
 
 ### Podpory — co i dlaczego
@@ -74,16 +84,24 @@ bardziej niż 45°, z pominięciem tego, co leży na stole):
 
 | część | powierzchnia | zwisy | gdzie |
 |---|---|---|---|
-| `zolw-cialo` | 11 142 mm² | **2 373 mm²** (21 %) | spód brzucha, powyżej 8 mm |
+| `zolw-cialo` | 11 142 mm² | **2 353 mm²** (21 %) | spód brzucha + końcówka szyi |
 | `zolw-pancerz` | 11 373 mm² | **31 mm²** | tylko dna gniazd na kołki |
 
 Czyli: **pancerz drukuj bez podpór**, ciało z podporami, ale ustawionymi na
 *„tylko od płyty"* — wyrosną spod brzucha, między nogami, i po oderwaniu
 zostaną ślady na spodzie, którego i tak nie widać na półce.
 
-Szyja podpór **nie** potrzebuje mimo łuku: nachylenie maleje z **58°** przy
-pancerzu do **46°** pod głową, czyli nigdzie nie schodzi poniżej progu 45°.
-Skrypt wypisuje oba kąty przy każdym uruchomieniu.
+**Szyja potrzebuje teraz podpór na końcówce.** Łuk schodzi z **60°** przy
+pancerzu do **34°** pod głową — ta druga liczba jest poniżej progu 45°, więc
+spód szyi tuż za łbem wisi. To cena za kształt S z rysunku: żeby szyja się
+położyła, musi gdzieś zejść poniżej progu. Skrypt sam to zgłasza:
+
+```
+uwaga: koncowka szyi ma 34 st. (< 45) - jej spod bedzie wymagal podpor
+```
+
+Nie chcesz podpór pod szyją — podnieś `SZYJA_KAT_GORA` do 45; szyja wyprostuje
+się w łagodniejszy łuk, bliższy poprzedniej wersji.
 
 ### Ustawienia
 
@@ -110,10 +128,11 @@ deseń na skorupie osobno, bez obchodzenia nóg i głowy.
 **Wygenerowane, nie wydrukowane.**
 
 ```
-szyja: luk 58 -> 46 st., wysieg 21.9 mm (samonosna gdy >= 45)
+szyja: luk 60 -> 34 st., wysieg 26.3 mm
+uwaga: koncowka szyi ma 34 st. (< 45) - jej spod bedzie wymagal podpor
 szyja: os przechodzi pod plaszczyzna posadowienia pancerza - ok
-cialo     trojk=87624  nonmanifold=0  ROZLACZNYCH=1  bbox=115.2 x 75.1 x 53.7 mm  V=37.4 cm3
-pancerz   trojk=41533  nonmanifold=0  ROZLACZNYCH=1  bbox=72.4 x 66.1 x 36.4 mm   V=82.3 cm3
+cialo     trojk=87701  nonmanifold=0  ROZLACZNYCH=1  bbox=121.0 x 75.1 x 53.0 mm  V=37.8 cm3
+pancerz   trojk=41525  nonmanifold=0  ROZLACZNYCH=1  bbox=72.4 x 66.1 x 36.4 mm   V=82.3 cm3
 ```
 
 `ROZLACZNYCH=1` to kontrola, która tu zarabia na siebie: **szczelność nie
@@ -134,6 +153,14 @@ Rzeczy, które wiem, że są niedokończone:
   fałdy nad głową. Do domalowania albo do dorobienia w modelu.
 - Kolce na rancie są drobne (ok. 5 mm przy `PANCERZ_DL = 70`); przy
   zmniejszaniu figurki zejdą poniżej sensownej granicy.
+
+### Czwarta pułapka: boolean zostawia śmieci w siatce
+
+Wycięcie paszczy zostawiało **3 krawędzie niemanifoldowe** w cienkich
+miejscach, gdzie klin wychodził przez powierzchnię. Liczba rozłącznych brył
+tego nie widzi, bo model jest nadal jedną bryłą. Po każdym booleanie leci
+teraz `napraw()`: scalenie zdublowanych wierzchołków, usunięcie zdegenerowanych
+ścianek i wyprostowanie normalnych. Po tym `nonmanifold = 0`.
 
 ### Trzecia pułapka: nóż spłaszczający wierzch ciała
 

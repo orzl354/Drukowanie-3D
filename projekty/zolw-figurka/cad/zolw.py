@@ -49,15 +49,15 @@ CIALO_DL_F = 0.86
 CIALO_SZER_F = 0.74      # wzgledem szerokosci pancerza
 
 SZYJA_R_F  = 0.078       # gruba szyja
-GLOWA_Z_F     = 0.60     # na jakiej wysokosci siedzi glowa (leb w gorze)
-SZYJA_KAT_DOL = 58.0     # kat szyi przy pancerzu [st.] - stromo
-SZYJA_KAT_GORA= 46.0     # kat szyi pod glowa [st.] - lagodniej = widoczny luk
+GLOWA_Z_F     = 0.64     # na jakiej wysokosci siedzi glowa (leb w gorze)
+SZYJA_KAT_DOL = 60.0     # kat szyi przy pancerzu [st.] - stromo
+SZYJA_KAT_GORA= 34.0     # kat szyi pod glowa [st.] - lagodniej = widoczny luk
                          #   Oba musza zostac >= 45, inaczej spod szyi staje
                          #   sie zwisem. Wysieg do przodu wychodzi z nich
                          #   i z GLOWA_Z_F, nie zadaje sie go osobno.
-GLOWA_POCHYL  = 24.0     # odgiecie lba do gory [st.]
-PYSK_ROZWARCIE= 40.0     # rozwarcie paszczy [st.] - 0 = pysk zamkniety
-PYSK_GLEB_F   = 0.74     # jak gleboko paszcza wchodzi w glowe (x GLOWA_DL)
+GLOWA_POCHYL  = 5.0     # odgiecie lba do gory [st.]
+PYSK_ROZWARCIE= 54.0     # rozwarcie paszczy [st.] - 0 = pysk zamkniety
+PYSK_GLEB_F   = 0.92     # jak gleboko paszcza wchodzi w glowe (x GLOWA_DL)
 
 GLOWA_DL_F = 0.30
 GLOWA_SZER_F = 0.235
@@ -216,6 +216,22 @@ def klin(wierzcholek, kier_gora, kier_dol, dlugosc, polszer, nazwa='Klin'):
     bpy.ops.object.mode_set(mode='OBJECT')
     return ob
 
+def napraw(obiekt, prog=0.002):
+    """Sprzata po booleanach: scala zdublowane wierzcholki, usuwa zerowe
+    scianki i prostuje normalne. Ciecie klinem zostawia w cienkich miejscach
+    pojedyncze krawedzie niemanifoldowe - to je kasuje."""
+    bpy.context.view_layer.objects.active = obiekt
+    for o in bpy.context.selected_objects:
+        o.select_set(False)
+    obiekt.select_set(True)
+    bpy.ops.object.mode_set(mode='EDIT')
+    bpy.ops.mesh.select_all(action='SELECT')
+    bpy.ops.mesh.remove_doubles(threshold=prog)
+    bpy.ops.mesh.dissolve_degenerate(threshold=prog)
+    bpy.ops.mesh.normals_make_consistent(inside=False)
+    bpy.ops.object.mode_set(mode='OBJECT')
+    return obiekt
+
 def diagnostyka(obiekt, etykieta):
     bm = bmesh.new()
     bm.from_mesh(obiekt.data)
@@ -269,8 +285,10 @@ a_gora = math.tan(math.radians(SZYJA_KAT_GORA))
 x0, z0 = C_DL * 0.50, CIALO_Z0 + CIALO_WYS * 0.25
 dz = S * GLOWA_Z_F - z0
 dx = 2.0 * dz / (a_dol + a_gora)          # z warunku: pole pod wykresem = dz
-print('   szyja: luk %.0f -> %.0f st., wysieg %.1f mm (samonosna gdy >= 45)'
-      % (SZYJA_KAT_DOL, SZYJA_KAT_GORA, dx))
+print('   szyja: luk %.0f -> %.0f st., wysieg %.1f mm' % (SZYJA_KAT_DOL, SZYJA_KAT_GORA, dx))
+if min(SZYJA_KAT_DOL, SZYJA_KAT_GORA) < 45.0:
+    print('   uwaga: koncowka szyi ma %.0f st. (< 45) - jej spod bedzie wymagal podpor'
+          % min(SZYJA_KAT_DOL, SZYJA_KAT_GORA))
 
 SZ_PKT = 20
 kolizja = 0.0
@@ -301,12 +319,21 @@ NX, NZ = x0 + dx, z0 + a_dol * dx - (a_dol - a_gora) * dx / 2.0   # koniec szyi
 def pkt_glowy(wzdluz, wzwyz=0.0):
     return (NX + FX * wzdluz + UX * wzwyz, 0.0, NZ + FZ * wzdluz + UZ * wzwyz)
 
+# --- geometria paszczy: wierzcholek (zawias) i kierunki obu szczek -------
+G_GORA = math.radians(4.0)                       # gorne podniebienie - tuz pod osia
+G_DOL  = math.radians(PYSK_ROZWARCIE)            # dolna szczeka opada o cale rozwarcie
+GORNA = (FX * math.cos(G_GORA) - UX * math.sin(G_GORA),
+         FZ * math.cos(G_GORA) - UZ * math.sin(G_GORA))
+DOLNA = (FX * math.cos(G_DOL) - UX * math.sin(G_DOL),
+         FZ * math.cos(G_DOL) - UZ * math.sin(G_DOL))
+ZAWIAS = pkt_glowy(GLOWA_DL * 0.12, GLOWA_WYS * 0.02)
+
 for i in range(6):
     t = i / 5.0
     px, _, pz = pkt_glowy(GLOWA_DL * (0.10 + 0.72 * t))
     bryla((px, 0, pz), (GLOWA_DL * 0.20,
-                        GLOWA_SZER * 0.50 * (1.0 - 0.42 * t),
-                        GLOWA_WYS * 0.50 * (1.0 - 0.34 * t)))
+                        GLOWA_SZER * 0.50 * (1.0 - 0.56 * t),
+                        GLOWA_WYS * 0.50 * (1.0 - 0.48 * t)))
 
 # --- policzki -----------------------------------------------------------
 for strona in (1, -1):
@@ -361,16 +388,24 @@ boolean(cialo, ob, 'DIFFERENCE')
 #  DETALE GLOWY: swinski ryjek, nozdrza, oczy, powieki
 # ===========================================================================
 dodatki = []
-# ryjek - splaszczona elipsoida na koncu pyska
-RPX, _, RPZ = pkt_glowy(GLOWA_DL * 0.86)
+# Ryjek siedzi na KONCU GORNEJ SZCZEKI, odsuniety na zewnatrz paszczy.
+# Gdy lezal na osi glowy, szeroko rozwarty klin wchlanial go w calosci
+# i odcinal czubek jako osobna, plywajaca bryle.
+RPX, _, RPZ = pkt_glowy(GLOWA_DL * 0.84, GLOWA_WYS * 0.16)
 dodatki.append(elipsoida((RPX, 0, RPZ),
                          (RYJEK_GR * 1.10, RYJEK_D * 0.44, RYJEK_D * 0.40)))
 
 # oczy - wysoko i blisko czola, jak na rysunku
 for strona in (1, -1):
-    ox_, _, oz_ = pkt_glowy(GLOWA_DL * 0.30, GLOWA_WYS * 0.30)
+    ox_, _, oz_ = pkt_glowy(GLOWA_DL * 0.30, GLOWA_WYS * 0.28)
     dodatki.append(elipsoida((ox_, strona * GLOWA_SZER * 0.26, oz_),
                              (OKO_R * 0.95, OKO_R * 1.05, OKO_R * 1.05), segs=24))
+    # wal brwiowy: nasuniety na galke od gory i do tylu, nachodzi tez na
+    # czaszke - dzieki temu po remeshu jest jedna bryla, a nie doklejka
+    bx_, _, bz_ = pkt_glowy(GLOWA_DL * 0.24, GLOWA_WYS * 0.40)
+    dodatki.append(elipsoida((bx_, strona * GLOWA_SZER * 0.25, bz_),
+                             (GLOWA_DL * 0.17, OKO_R * 1.15, GLOWA_WYS * 0.12),
+                             segs=24))
 
 # --- pazury: po 3 na stope ----------------------------------------------
 for x_lapa, y_lapa, a, strona in STOPY:
@@ -392,19 +427,16 @@ remesh(cialo)
 
 # PASZCZA - wycinana PO remeshu. Przed remeshem voxel zalalby szczeline,
 # a boolean na samoprzecinajacej sie siatce (patrz pancerz) jest nieokreslony.
-g = math.radians(PYSK_ROZWARCIE) * 0.5
-gx, gz = FX * math.cos(g) - UX * math.sin(g), FZ * math.cos(g) - UZ * math.sin(g)
-dx_, dz_ = FX * math.cos(g) + UX * math.sin(g), FZ * math.cos(g) + UZ * math.sin(g)
-wx, _, wz = pkt_glowy(GLOWA_DL * 0.10, -GLOWA_WYS * 0.06)
-boolean(cialo, klin((wx, 0.0, wz), (gx, gz), (dx_, dz_),
+boolean(cialo, klin(ZAWIAS, DOLNA, GORNA,
                     GLOWA_DL * PYSK_GLEB_F, GLOWA_SZER * 0.44), 'DIFFERENCE')
 
-# nozdrza - wiercone wzdluz osi glowy
+# nozdrza - w ryjku, czyli na koncu gornej szczeki
 for strona in (1, -1):
-    nx_, _, nz_ = pkt_glowy(GLOWA_DL * 0.84, GLOWA_WYS * 0.02)
+    nx_, _, nz_ = pkt_glowy(GLOWA_DL * 0.84, GLOWA_WYS * 0.16)
     d = walec((nx_, strona * RYJEK_D * 0.18, nz_), S * DZIURKA_D_F * 0.5,
-              RYJEK_GR * 2.2, obrot=(0, math.radians(90.0 - GLOWA_POCHYL), 0))
+              RYJEK_GR * 2.6, obrot=(0, math.radians(90.0 - GLOWA_POCHYL), 0))
     boolean(cialo, d, 'DIFFERENCE')
+napraw(cialo)
 decymuj(cialo, CEL_TROJKATOW)
 
 # ===========================================================================
@@ -441,6 +473,7 @@ boolean(pancerz, pudlo((0, 0, -200), (600, 600, 400)), 'DIFFERENCE')
 for kx, ky in POZ_KOLKOW:
     boolean(pancerz, walec((kx, ky, KOLEK_H / 2 - 0.6),
                            (KOLEK_D + KOLEK_LUZ) / 2, KOLEK_H + 1.0), 'DIFFERENCE')
+napraw(pancerz)
 decymuj(pancerz, CEL_TROJKATOW // 2)
 
 # ===========================================================================
