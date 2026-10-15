@@ -48,20 +48,20 @@ CIALO_WYS_F= 0.17
 CIALO_DL_F = 0.86
 CIALO_SZER_F = 0.74      # wzgledem szerokosci pancerza
 
-SZYJA_R_F  = 0.078       # gruba szyja
-GLOWA_Z_F     = 0.64     # na jakiej wysokosci siedzi glowa (leb w gorze)
+SZYJA_R_F  = 0.092       # gruba szyja
+GLOWA_Z_F     = 0.72     # na jakiej wysokosci siedzi glowa (leb w gorze)
 SZYJA_KAT_DOL = 60.0     # kat szyi przy pancerzu [st.] - stromo
 SZYJA_KAT_GORA= 34.0     # kat szyi pod glowa [st.] - lagodniej = widoczny luk
                          #   Oba musza zostac >= 45, inaczej spod szyi staje
                          #   sie zwisem. Wysieg do przodu wychodzi z nich
                          #   i z GLOWA_Z_F, nie zadaje sie go osobno.
 GLOWA_POCHYL  = 5.0     # odgiecie lba do gory [st.]
-PYSK_ROZWARCIE= 54.0     # rozwarcie paszczy [st.] - 0 = pysk zamkniety
-PYSK_GLEB_F   = 0.92     # jak gleboko paszcza wchodzi w glowe (x GLOWA_DL)
+PYSK_ROZWARCIE= 66.0     # rozwarcie paszczy [st.] - 0 = pysk zamkniety
+PYSK_GLEB_F   = 0.86     # jak gleboko paszcza wchodzi w glowe (x GLOWA_DL)
 
-GLOWA_DL_F = 0.30
-GLOWA_SZER_F = 0.235
-GLOWA_WYS_F  = 0.205
+GLOWA_DL_F = 0.33
+GLOWA_SZER_F = 0.275
+GLOWA_WYS_F  = 0.225
 OKO_R_F    = 0.050       # duze oczy
 POWIEKA_F  = 0.030       # walek nad okiem = ciezka powieka
 RYJEK_D_F  = 0.135       # srednica swinskiego dysku
@@ -332,8 +332,19 @@ for i in range(6):
     t = i / 5.0
     px, _, pz = pkt_glowy(GLOWA_DL * (0.10 + 0.72 * t))
     bryla((px, 0, pz), (GLOWA_DL * 0.20,
-                        GLOWA_SZER * 0.50 * (1.0 - 0.56 * t),
-                        GLOWA_WYS * 0.50 * (1.0 - 0.48 * t)))
+                        GLOWA_SZER * 0.50 * (1.0 - 0.30 * t),
+                        GLOWA_WYS * 0.50 * (1.0 - 0.26 * t)))
+
+# --- zuchwa: wlasny lancuch brył wzdluz kierunku dolnej szczeki ---------
+#     Klin tnie dokladnie wzdluz tej samej osi, wiec zbiera gorne polowki
+#     tych bryl - zostaje zuchwa z plaskim wierzchem, czyli dnem paszczy.
+for i in range(7):
+    t = i / 6.0
+    zx = ZAWIAS[0] + DOLNA[0] * GLOWA_DL * 0.80 * t
+    zz = ZAWIAS[2] + DOLNA[1] * GLOWA_DL * 0.80 * t
+    bryla((zx, 0, zz), (GLOWA_DL * 0.13,
+                        GLOWA_SZER * 0.44 * (1.0 - 0.34 * t),
+                        GLOWA_WYS * 0.34 * (1.0 - 0.22 * t)))
 
 # --- policzki -----------------------------------------------------------
 for strona in (1, -1):
@@ -393,18 +404,18 @@ dodatki = []
 # i odcinal czubek jako osobna, plywajaca bryle.
 RPX, _, RPZ = pkt_glowy(GLOWA_DL * 0.84, GLOWA_WYS * 0.16)
 dodatki.append(elipsoida((RPX, 0, RPZ),
-                         (RYJEK_GR * 1.10, RYJEK_D * 0.44, RYJEK_D * 0.40)))
+                         (RYJEK_GR * 1.45, RYJEK_D * 0.60, RYJEK_D * 0.52)))
 
 # oczy - wysoko i blisko czola, jak na rysunku
 for strona in (1, -1):
-    ox_, _, oz_ = pkt_glowy(GLOWA_DL * 0.30, GLOWA_WYS * 0.28)
-    dodatki.append(elipsoida((ox_, strona * GLOWA_SZER * 0.26, oz_),
-                             (OKO_R * 0.95, OKO_R * 1.05, OKO_R * 1.05), segs=24))
+    ox_, _, oz_ = pkt_glowy(GLOWA_DL * 0.46, GLOWA_WYS * 0.40)
+    dodatki.append(elipsoida((ox_, strona * GLOWA_SZER * 0.21, oz_),
+                             (OKO_R * 1.05, OKO_R * 1.10, OKO_R * 1.10), segs=24))
     # wal brwiowy: nasuniety na galke od gory i do tylu, nachodzi tez na
     # czaszke - dzieki temu po remeshu jest jedna bryla, a nie doklejka
-    bx_, _, bz_ = pkt_glowy(GLOWA_DL * 0.24, GLOWA_WYS * 0.40)
-    dodatki.append(elipsoida((bx_, strona * GLOWA_SZER * 0.25, bz_),
-                             (GLOWA_DL * 0.17, OKO_R * 1.15, GLOWA_WYS * 0.12),
+    bx_, _, bz_ = pkt_glowy(GLOWA_DL * 0.40, GLOWA_WYS * 0.50)
+    dodatki.append(elipsoida((bx_, strona * GLOWA_SZER * 0.20, bz_),
+                             (GLOWA_DL * 0.15, OKO_R * 1.15, GLOWA_WYS * 0.11),
                              segs=24))
 
 # --- pazury: po 3 na stope ----------------------------------------------
@@ -428,15 +439,23 @@ remesh(cialo)
 # PASZCZA - wycinana PO remeshu. Przed remeshem voxel zalalby szczeline,
 # a boolean na samoprzecinajacej sie siatce (patrz pancerz) jest nieokreslony.
 boolean(cialo, klin(ZAWIAS, DOLNA, GORNA,
-                    GLOWA_DL * PYSK_GLEB_F, GLOWA_SZER * 0.44), 'DIFFERENCE')
+                    GLOWA_DL * PYSK_GLEB_F, GLOWA_SZER * 0.80), 'DIFFERENCE')
 
 # nozdrza - w ryjku, czyli na koncu gornej szczeki
 for strona in (1, -1):
-    nx_, _, nz_ = pkt_glowy(GLOWA_DL * 0.84, GLOWA_WYS * 0.16)
+    # srodek wiertla przesuniety do przodu o 1.2x grubosci ryjka, dlugosc 2.0x
+    # -> otwor siega ok. 0.6x w glab i nie wychodzi z drugiej strony
+    nx_, _, nz_ = pkt_glowy(GLOWA_DL * 0.84 + RYJEK_GR * 1.2, GLOWA_WYS * 0.16)
     d = walec((nx_, strona * RYJEK_D * 0.18, nz_), S * DZIURKA_D_F * 0.5,
-              RYJEK_GR * 2.6, obrot=(0, math.radians(90.0 - GLOWA_POCHYL), 0))
+              RYJEK_GR * 2.0, obrot=(0, math.radians(90.0 - GLOWA_POCHYL), 0))
     boolean(cialo, d, 'DIFFERENCE')
+# Boolean NIGDY nie gwarantuje siatki manifoldowej: tam, gdzie noz dotyka
+# powierzchni stycznie (bok lba, os zuchwy), zostaja pojedyncze krawedzie,
+# ktorych napraw() juz nie zbierze. Remesh voxelowy gwarantuje manifold
+# z definicji - przechodzi po calej bryle od nowa. Przy 0.35 mm zmiekczenie
+# krawedzi paszczy i nozdrzy jest i tak ponizej rozdzielczosci druku.
 napraw(cialo)
+remesh(cialo)
 decymuj(cialo, CEL_TROJKATOW)
 
 # ===========================================================================

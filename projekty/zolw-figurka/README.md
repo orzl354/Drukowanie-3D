@@ -25,9 +25,9 @@ zmieniło cztery rzeczy:
 | ryjek | zwężający się stożek | **płaski dysk z dwiema dziurkami** |
 | nogi | długie słupki | **krótkie, przysadziste, z dużymi pazurami** |
 | rant pancerza | gładki | **kolce dookoła** |
-| szyja | prosty skos | **łuk S: 60° przy pancerzu → 34° pod głową** |
+| szyja | prosty skos | **łuk S: 60° przy pancerzu → 34° pod głową, wysięg 31 mm** |
 | łeb | zadarty o 24° | **prawie poziomy (5°)** |
-| pysk | zamknięty | **rozwarty na 54°, dolna szczęka opada** |
+| pysk | zamknięty | **rozdziawiony na 66°, z osobną żuchwą** |
 | brwi | brak | **wał brwiowy nad okiem** |
 
 Oczy są samymi wypukłymi gałkami. Ciężkie powieki, które postać ma na rysunku,
@@ -35,6 +35,13 @@ to kreska — łatwiej je domalować niż wydrukować, a próba zrobienia ich
 geometrią dawała efekt guzika z kapeluszem.
 
 **Groźny wyraz robi rozwarta paszcza plus wał brwiowy, nie same oczy.**
+
+**Żuchwa to osobny łańcuch brył** biegnący wzdłuż kierunku dolnej szczęki.
+Wcześniej „dolna szczęka" była tylko tym, co zostało z łba po cięciu — przy
+szerokim rozwarciu nie zostawało praktycznie nic i paszcza wyglądała jak
+nacięta szpara zamiast rozdziawionego pyska. Klin tnie teraz dokładnie wzdłuż
+osi tych brył, więc zbiera ich górne połowy i zostaje żuchwa z płaskim
+wierzchem, czyli dno paszczy.
 
 Paszcza jest wycinana klinem **niesymetrycznie**: górne podniebienie biegnie
 praktycznie wzdłuż osi łba (4°), a opada tylko dolna szczęka — o całe
@@ -73,7 +80,7 @@ i najłatwiej się maluje (PETG trzeba odtłuścić i gorzej trzyma podkład).
 
 | część | gabaryty [mm] | orientacja | podpory |
 |---|---|---|---|
-| `zolw-cialo` | 121 × 75 × 53 | jak stoi, na stopach | **tak — brzuch i spód szyi** |
+| `zolw-cialo` | 128 × 75 × 61 | jak stoi, na stopach | **tak — brzuch i spód szyi** |
 | `zolw-pancerz` | 72 × 66 × 36 | kopułą do góry, płaską podstawą na stół | **nie** |
 
 ### Podpory — co i dlaczego
@@ -84,7 +91,7 @@ bardziej niż 45°, z pominięciem tego, co leży na stole):
 
 | część | powierzchnia | zwisy | gdzie |
 |---|---|---|---|
-| `zolw-cialo` | 11 142 mm² | **2 353 mm²** (21 %) | spód brzucha + końcówka szyi |
+| `zolw-cialo` | 11 142 mm² | **2 405 mm²** (22 %) | spód brzucha + końcówka szyi |
 | `zolw-pancerz` | 11 373 mm² | **31 mm²** | tylko dna gniazd na kołki |
 
 Czyli: **pancerz drukuj bez podpór**, ciało z podporami, ale ustawionymi na
@@ -128,10 +135,10 @@ deseń na skorupie osobno, bez obchodzenia nóg i głowy.
 **Wygenerowane, nie wydrukowane.**
 
 ```
-szyja: luk 60 -> 34 st., wysieg 26.3 mm
+szyja: luk 60 -> 34 st., wysieg 31.0 mm
 uwaga: koncowka szyi ma 34 st. (< 45) - jej spod bedzie wymagal podpor
 szyja: os przechodzi pod plaszczyzna posadowienia pancerza - ok
-cialo     trojk=87701  nonmanifold=0  ROZLACZNYCH=1  bbox=121.0 x 75.1 x 53.0 mm  V=37.8 cm3
+cialo     trojk=90648  nonmanifold=0  ROZLACZNYCH=1  bbox=127.7 x 75.0 x 61.4 mm  V=41.4 cm3
 pancerz   trojk=41525  nonmanifold=0  ROZLACZNYCH=1  bbox=72.4 x 66.1 x 36.4 mm   V=82.3 cm3
 ```
 
@@ -154,13 +161,28 @@ Rzeczy, które wiem, że są niedokończone:
 - Kolce na rancie są drobne (ok. 5 mm przy `PANCERZ_DL = 70`); przy
   zmniejszaniu figurki zejdą poniżej sensownej granicy.
 
-### Czwarta pułapka: boolean zostawia śmieci w siatce
+### Czwarta pułapka: boolean nigdy nie gwarantuje siatki manifoldowej
 
-Wycięcie paszczy zostawiało **3 krawędzie niemanifoldowe** w cienkich
-miejscach, gdzie klin wychodził przez powierzchnię. Liczba rozłącznych brył
-tego nie widzi, bo model jest nadal jedną bryłą. Po każdym booleanie leci
-teraz `napraw()`: scalenie zdublowanych wierzchołków, usunięcie zdegenerowanych
-ścianek i wyprostowanie normalnych. Po tym `nonmanifold = 0`.
+Wycięcie paszczy zostawiało krawędzie niemanifoldowe tam, gdzie nóż dotyka
+powierzchni **stycznie** — a tego liczba rozłącznych brył nie widzi, bo model
+jest nadal jedną bryłą. Dwa podejścia nie wystarczyły:
+
+1. `napraw()` po każdym booleanie (scalenie zdublowanych wierzchołków, usunięcie
+   zdegenerowanych ścianek, wyprostowanie normalnych) — zbiło liczbę, ale nie
+   do zera.
+2. Poszerzenie klina ponad obrys łba, żeby nie ocierał o bok stycznie —
+   z 9 krawędzi zrobiło 6. Drugim źródłem była żuchwa cięta wzdłuż własnej osi.
+
+Zadziałał dopiero **końcowy remesh voxelowy po wszystkich booleanach**: voxel
+przechodzi całą bryłę od nowa, więc manifold wychodzi z definicji. Przy 0,35 mm
+zmiękczenie krawędzi paszczy i nozdrzy jest poniżej rozdzielczości druku.
+
+### Piąta pułapka: wiercenie na wylot
+
+Nozdrza były wiercone walcem przez cały ryjek. Po powiększeniu ryjka wiertło
+wraz z cięciem paszczy od spodu **odcięło czapeczkę na czubku** — 62 trójkąty
+pływające osobno. Teraz to otwory ślepe: wiertło zaczyna się przed ryjkiem
+i kończy w jego wnętrzu.
 
 ### Trzecia pułapka: nóż spłaszczający wierzch ciała
 
