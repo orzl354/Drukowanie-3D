@@ -116,7 +116,9 @@ taki widok.
 - `Z` w górę, `X` w prawo (patrząc z przodu), `Y` w głąb.
 - Samochód ustawiamy tak: **długość wzdłuż Y, szerokość wzdłuż X,
   przód auta skierowany w −Y**. Wtedy `Numpad 1` (Front) pokazuje przód auta,
-  a `Numpad 3` (Right) jego prawy bok.
+  a `Numpad 3` (Right) patrzy z prawej strony sceny (od +X), więc widzisz
+  **lewy** bok auta. Bryła jest symetryczna, więc to bez znaczenia, ale nie
+  zdziw się, gdy blueprint boku pokazuje stronę kierowcy.
 
 ### Zaznaczanie i podstawowe operacje (Object Mode)
 
@@ -627,7 +629,7 @@ na A1.**
 | Skrót | Co robi | Gdzie |
 |---|---|---|
 | środkowy / `Shift`+środkowy / kółko | obrót / przesuw / zoom widoku | wszędzie |
-| `Numpad 1 / 3 / 7` (+`Ctrl` = przeciwna strona) | przód / prawy bok / góra | wszędzie |
+| `Numpad 1 / 3 / 7` (+`Ctrl` = przeciwna strona) | przód / bok (z +X) / góra | wszędzie |
 | `Numpad 5` | perspektywa ↔ ortogonalny | wszędzie |
 | `Numpad .` / `Home` | centruj na zaznaczonym / pokaż wszystko | wszędzie |
 | `N` / `T` | sidebar (wymiary) / toolbar | wszędzie |
