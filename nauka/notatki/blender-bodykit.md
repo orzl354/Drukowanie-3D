@@ -288,6 +288,39 @@ leżą w tej samej osi, więc bez tego w widoku z przodu prześwitywałby też t
 a oś przedniego koła na boku = oś przedniego koła na górze. Jeśli różnica jest
 większa niż 1–2 cm, coś jest źle przeskalowane.
 
+### Metoda dokładna: liczbami zamiast „na oko”
+
+Działa, jeśli obrazki są **przycięte ciasno do karoserii** (bez marginesów
+i bez lusterek). Wtedy nie skalujesz myszą, tylko wpisujesz wymiary.
+
+Dwie rzeczy, które trzeba wiedzieć o obrazku w Blenderze (Object Data → panel `Empty`):
+- **`Size` = długość dłuższego boku obrazka** (w metrach). Bok auta i widok
+  z góry mają dłuższy bok = długość auta. Przód i tył mają dłuższy bok =
+  szerokość auta.
+- **`Offset X/Y`** przesuwa obrazek względem jego środka (origin). Domyślne
+  `-0.5 / -0.5` = obrazek wyśrodkowany. **`Offset Y = 0`** = dolna krawędź
+  obrazka leży na originie, więc przy `Location Z = 0` opony stoją dokładnie
+  na ziemi.
+
+| Obiekt | Widok przed dodaniem | Location X / Y / Z | Rotation X / Y / Z | Size | Offset X / Y | Side |
+|---|---|---|---|---|---|---|
+| `bp_bok` | `Numpad 3` | −2 / 0 / 0 | 90° / 0 / 90° | długość | −0.5 / **0** | Both |
+| `bp_przod` | `Numpad 1` | 0 / 3 / 0 | 90° / 0 / 0 | szerokość | −0.5 / **0** | Front |
+| `bp_tyl` | `Ctrl + Numpad 1` | 0 / −3 / 0 | 90° / 0 / 180° | szerokość | −0.5 / **0** | Front |
+| `bp_gora` | `Numpad 7` | 0 / 0 / −0.1 | 0 / 0 / 0 | długość | −0.5 / −0.5 | Both |
+
+Rotation ustawia się sama, gdy dodajesz obrazek w danym widoku. W tabeli jest
+do sprawdzenia w panelu `N`. Obrazki są odsunięte od auta (X = −2, Y = ±3), żeby
+nie przecinały modelu. Dzięki `Depth: Front` i tak są widoczne nad nim.
+
+Szybkie poprawki bez edytora zdjęć:
+- przód auta na boku jest po prawej → w panelu `N` ustaw `Scale X = -1` dla `bp_bok`,
+- przód auta na widoku z góry jest u góry ekranu → `Rotation Z = 180°` dla `bp_gora`.
+
+Jeśli po wpisaniu liczb dach albo koła nie trafiają w miarkę, blueprint jest
+niespójny. **Bok traktuj jako wzorzec i go nie ruszaj.** Pozostałe rzuty
+dopasuj do boku drobną zmianą `Size`.
+
 ### Krok 6 — uporządkuj i zablokuj
 
 1. Zaznacz wszystkie `bp_*` (`Shift` + klik w Outlinerze), kursor nad
