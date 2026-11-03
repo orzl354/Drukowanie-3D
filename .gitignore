@@ -8,6 +8,10 @@
 *.f3d.bak
 *.FCStd1
 *.FCBak
+# Blender: automatyczne kopie poprzedniego zapisu i pliki tymczasowe
+*.blend1
+*.blend2
+*.blend@
 *~
 
 # --- Systemowe ---
